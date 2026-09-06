@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# GSA (GenSEAM Agent) - Pure AgentScript Autonomous Coding Agent
+set -eo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec asl "$ROOT/src/cli.asl" "$@"
