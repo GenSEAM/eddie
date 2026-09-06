@@ -1,10 +1,24 @@
 (module asl-eddie/policy
-  :d "Capability-based sandboxing and zero-spam permission policy."
-  :x [PermissionManifest PermissionResult
-      make-manifest allow-silent deny-strict deny-unauthorized
+  :d "Capability-based sandboxing, autonomy levels, and zero-spam permission policy."
+  :x [AutonomyLevel ActionCategory PermissionManifest PermissionResult
+      level-ask level-guarded level-auto
+      cat-read cat-test cat-write cat-exec
+      make-manifest allow-silent allow-prompt deny-strict deny-unauthorized
       has-traversal? is-system-path? is-in-worktrees?
-      check-permission]
+      action-to-category autonomy-level-to-string
+      check-permission check-autonomy-permission]
   :i [])
+
+(dfe AutonomyLevel
+  (:c level-ask [] "L0: Prompt for every file edit and shell command")
+  (:c level-guarded [] "L1: Auto-allow read/search/test; prompt for write/exec")
+  (:c level-auto [] "L2: Fully autonomous execution within workspace sandbox"))
+
+(dfe ActionCategory
+  (:c cat-read [] "Read-only file inspection, grep, search")
+  (:c cat-test [] "Sandboxed verification and test runner")
+  (:c cat-write [] "File modification, deletion, or creation")
+  (:c cat-exec [] "Shell command execution"))
 
 (dfs PermissionManifest
   (:f workspace-root Str "Canonical workspace root directory")
@@ -34,6 +48,14 @@
     :reason reason
     :code "ALLOW_SILENT"))
 
+(df allow-prompt [(reason Str)] -> PermissionResult
+  :d "Constructs an allow-prompt permission result requiring user confirmation."
+  (PermissionResult
+    :allowed true
+    :silent false
+    :reason reason
+    :code "ALLOW_PROMPT"))
+
 (df deny-strict [(reason Str)] -> PermissionResult
   :d "Constructs a strict denial permission result for traversal or escape attacks."
   (PermissionResult
@@ -49,6 +71,29 @@
     :silent false
     :reason reason
     :code "DENY_UNAUTHORIZED"))
+
+(df action-to-category [(action Str)] -> ActionCategory
+  :d "Categorizes action string into canonical ActionCategory enum."
+  (cond
+    ((= action "read") (cat-read))
+    ((= action "view") (cat-read))
+    ((= action "grep") (cat-read))
+    ((= action "search") (cat-read))
+    ((= action "test") (cat-test))
+    ((= action "audit") (cat-test))
+    ((= action "write") (cat-write))
+    ((= action "patch") (cat-write))
+    ((= action "delete") (cat-write))
+    ((= action "exec") (cat-exec))
+    ((= action "shell") (cat-exec))
+    (:else (cat-write))))
+
+(df autonomy-level-to-string [(lvl AutonomyLevel)] -> Str
+  :d "Converts AutonomyLevel to display string."
+  (mt lvl
+    ((level-ask) "L0:Ask")
+    ((level-guarded) "L1:Guarded")
+    ((level-auto) "L2:FullAuto")))
 
 (df has-traversal? [(p Str)] -> Bool
   :d "Detects directory traversal sequences in path."
@@ -80,18 +125,38 @@
        true
        (is-in-worktrees? p (option-or (list-tail worktrees) (list)))))))
 
-(df check-permission [(action Str) (target-path Str) (manifest PermissionManifest)] -> PermissionResult
-  :d "Evaluates action and path against manifest capabilities."
+(df check-autonomy-permission [(action Str) (target-path Str) (manifest PermissionManifest) (level AutonomyLevel)] -> PermissionResult
+  :d "Evaluates action and path against manifest capabilities and autonomy level."
   (if (has-traversal? target-path)
     (deny-strict "sandbox escape: directory traversal rejected")
     (if (is-system-path? target-path)
       (deny-strict "sandbox escape: sensitive system path rejected")
-      (if (and (.-read-only manifest) (= action "write"))
+      (if (and (.-read-only manifest) (or (= action "write") (= action "patch")))
         (deny-strict "permission denied: manifest is read-only")
-        (if (string-starts-with? target-path (.-workspace-root manifest))
-          (allow-silent "path within authorized workspace root")
-          (if (string-starts-with? target-path (.-temp-dir manifest))
-            (allow-silent "path within authorized temp dir")
-            (if (is-in-worktrees? target-path (.-worktree-roots manifest))
-              (allow-silent "path within authorized worktree root")
-              (deny-unauthorized "path outside authorized manifest boundaries"))))))))
+        (let [(in-ws (string-starts-with? target-path (.-workspace-root manifest)))
+              (in-tmp (string-starts-with? target-path (.-temp-dir manifest)))
+              (in-wt (is-in-worktrees? target-path (.-worktree-roots manifest)))
+              (is-authorized (or in-ws (or in-tmp in-wt)))]
+          (if (not is-authorized)
+            (deny-unauthorized "path outside authorized manifest boundaries")
+            (let [(cat (action-to-category action))]
+              (mt level
+                ((level-ask)
+                 (mt cat
+                   ((cat-read) (allow-silent "path authorized (read-only)"))
+                   ((cat-test) (allow-silent "test verification authorized"))
+                   ((cat-write) (allow-prompt "confirmation required in L0:Ask mode for file write"))
+                   ((cat-exec) (allow-prompt "confirmation required in L0:Ask mode for command execution"))))
+                ((level-guarded)
+                 (mt cat
+                   ((cat-read) (allow-silent "path authorized (auto-read)"))
+                   ((cat-test) (allow-silent "test verification authorized (auto-test)"))
+                   ((cat-write) (allow-prompt "confirmation required in L1:Guarded mode for mutation"))
+                   ((cat-exec) (allow-prompt "confirmation required in L1:Guarded mode for execution"))))
+                ((level-auto)
+                 (allow-silent "path authorized for autonomous execution (L2:FullAuto)"))))))))))
+
+(df check-permission [(action Str) (target-path Str) (manifest PermissionManifest)] -> PermissionResult
+  :d "Evaluates action and path with default L2:FullAuto capability."
+  (check-autonomy-permission action target-path manifest (level-auto)))
+

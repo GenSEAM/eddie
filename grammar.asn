@@ -1,0 +1,111 @@
+;; Package Grammar & Exported Symbol Registry (ASN)
+;; @genseam/asl-eddie
+(:grammar
+  :package @genseam/asl-eddie
+  :version "0.3.0"
+  :tokens-baseline 2
+  :symbols [
+    ;; Agent
+    (:sym :name "AgentState" :kind :type :tokens 1)
+    (:sym :name "AgentSession" :kind :type :tokens 1)
+    (:sym :name "StepResult" :kind :type :tokens 1)
+    (:sym :name "make-agent-session" :kind :fn :tokens 3 :rationale "agent session constructor")
+    (:sym :name "step-agent" :kind :fn :tokens 2)
+    (:sym :name "run-bounded-session" :kind :fn :tokens 3 :rationale "bounded react loop execution")
+
+    ;; Eddie Orchestrator
+    (:sym :name "TaskTier" :kind :type :tokens 1)
+    (:sym :name "TaskIntent" :kind :type :tokens 1)
+    (:sym :name "TriageVerdict" :kind :type :tokens 1)
+    (:sym :name "TaskItem" :kind :type :tokens 1)
+    (:sym :name "TaskPool" :kind :type :tokens 1)
+    (:sym :name "OrchestrationPlan" :kind :type :tokens 1)
+    (:sym :name "fast-triage" :kind :fn :tokens 2)
+    (:sym :name "consult-and-refine" :kind :fn :tokens 3 :rationale "consultative refinement")
+    (:sym :name "plan-execution" :kind :fn :tokens 2)
+    (:sym :name "evaluate-circuit-breaker" :kind :fn :tokens 3 :rationale "circuit breaker evaluation")
+
+    ;; Feedback
+    (:sym :name "ClarificationOption" :kind :type :tokens 1)
+    (:sym :name "RefinedRequirement" :kind :type :tokens 1)
+    (:sym :name "is-ambiguous-prompt?" :kind :fn :tokens 3 :rationale "ambiguity detection predicate")
+    (:sym :name "strip-polite-fluff" :kind :fn :tokens 3 :rationale "conversational fluff remover")
+    (:sym :name "refine-user-prompt" :kind :fn :tokens 3 :rationale "prompt refiner constructor")
+    (:sym :name "format-clarifying-question" :kind :fn :tokens 3 :rationale "clarifying question renderer")
+    (:sym :name "format-concise-directive" :kind :fn :tokens 3 :rationale "concise directive renderer")
+    (:sym :name "format-tradeoff-block" :kind :fn :tokens 3 :rationale "trade-off disclosure renderer")
+
+    ;; FFI
+    (:sym :name "HostCallRequest" :kind :type :tokens 1)
+    (:sym :name "HostCallResponse" :kind :type :tokens 1)
+    (:sym :name "make-host-request" :kind :fn :tokens 3 :rationale "ffi request constructor")
+    (:sym :name "make-host-response" :kind :fn :tokens 3 :rationale "ffi response constructor")
+    (:sym :name "is-valid-capability?" :kind :fn :tokens 3 :rationale "capability validation predicate")
+    (:sym :name "is-valid-action?" :kind :fn :tokens 3 :rationale "action validation predicate")
+    (:sym :name "host-call" :kind :fn :tokens 2)
+
+    ;; Policy
+    (:sym :name "AutonomyLevel" :kind :type :tokens 1)
+    (:sym :name "ActionCategory" :kind :type :tokens 1)
+    (:sym :name "PermissionManifest" :kind :type :tokens 1)
+    (:sym :name "PermissionResult" :kind :type :tokens 1)
+    (:sym :name "level-ask" :kind :val :tokens 2)
+    (:sym :name "level-guarded" :kind :val :tokens 2)
+    (:sym :name "level-auto" :kind :val :tokens 2)
+    (:sym :name "cat-read" :kind :val :tokens 2)
+    (:sym :name "cat-test" :kind :val :tokens 2)
+    (:sym :name "cat-write" :kind :val :tokens 2)
+    (:sym :name "cat-exec" :kind :val :tokens 2)
+    (:sym :name "make-manifest" :kind :fn :tokens 2)
+    (:sym :name "allow-silent" :kind :fn :tokens 2)
+    (:sym :name "allow-prompt" :kind :fn :tokens 2)
+    (:sym :name "deny-strict" :kind :fn :tokens 2)
+    (:sym :name "deny-unauthorized" :kind :fn :tokens 2)
+    (:sym :name "has-traversal?" :kind :fn :tokens 2)
+    (:sym :name "is-system-path?" :kind :fn :tokens 3 :rationale "system path checker")
+    (:sym :name "is-in-worktrees?" :kind :fn :tokens 3 :rationale "worktree inclusion checker")
+    (:sym :name "action-to-category" :kind :fn :tokens 3 :rationale "action categorizer")
+    (:sym :name "autonomy-level-to-string" :kind :fn :tokens 4 :rationale "autonomy level renderer")
+    (:sym :name "check-permission" :kind :fn :tokens 2)
+    (:sym :name "check-autonomy-permission" :kind :fn :tokens 3 :rationale "autonomy permission evaluator")
+
+    ;; Triage
+    (:sym :name "WorkspaceContext" :kind :type :tokens 1)
+    (:sym :name "TriageDecision" :kind :type :tokens 1)
+    (:sym :name "make-workspace-context" :kind :fn :tokens 3 :rationale "workspace context constructor")
+    (:sym :name "make-triage-decision" :kind :fn :tokens 3 :rationale "triage decision constructor")
+    (:sym :name "is-setup-command?" :kind :fn :tokens 3 :rationale "setup command detector")
+    (:sym :name "is-admin-command?" :kind :fn :tokens 3 :rationale "admin command detector")
+    (:sym :name "is-question?" :kind :fn :tokens 2)
+    (:sym :name "is-dev-command?" :kind :fn :tokens 3 :rationale "development command detector")
+    (:sym :name "has-multi-aspect?" :kind :fn :tokens 3 :rationale "multi aspect prompt detector")
+    (:sym :name "has-explicit-split?" :kind :fn :tokens 3 :rationale "explicit split prompt detector")
+    (:sym :name "triage-request" :kind :fn :tokens 2)
+
+    ;; TUI
+    (:sym :name "TuiHeader" :kind :type :tokens 1)
+    (:sym :name "make-tui-header" :kind :fn :tokens 3 :rationale "tui header constructor")
+    (:sym :name "format-tui-header" :kind :fn :tokens 3 :rationale "tui header renderer")
+    (:sym :name "format-tool-call" :kind :fn :tokens 3 :rationale "tool call folding renderer")
+    (:sym :name "format-spinner-status" :kind :fn :tokens 3 :rationale "terminal spinner renderer")
+    (:sym :name "format-chat-msg" :kind :fn :tokens 3 :rationale "chat message formatter")
+    (:sym :name "format-session-summary" :kind :fn :tokens 3 :rationale "session summary formatter")
+
+    ;; Test symbols
+    (:sym :name "test-tui-header-rendering" :kind :fn :tokens 4 :rationale "tui test function")
+    (:sym :name "test-tool-call-folding" :kind :fn :tokens 4 :rationale "tui test function")
+    (:sym :name "test-spinner-formatting" :kind :fn :tokens 3 :rationale "tui test function")
+    (:sym :name "test-chat-msg-formatting" :kind :fn :tokens 4 :rationale "tui test function")
+    (:sym :name "test-session-summary" :kind :fn :tokens 3 :rationale "tui test function")
+    (:sym :name "test-l0-ask-mode" :kind :fn :tokens 4 :rationale "policy test function")
+    (:sym :name "test-l1-guarded-mode" :kind :fn :tokens 4 :rationale "policy test function")
+    (:sym :name "test-l2-fullauto-mode" :kind :fn :tokens 4 :rationale "policy test function")
+    (:sym :name "test-sandbox-traversal-rejections" :kind :fn :tokens 4 :rationale "policy test function")
+    (:sym :name "test-ambiguity-detection" :kind :fn :tokens 3 :rationale "feedback test function")
+    (:sym :name "test-strip-polite-fluff" :kind :fn :tokens 4 :rationale "feedback test function")
+    (:sym :name "test-refine-prompt" :kind :fn :tokens 3 :rationale "feedback test function")
+    (:sym :name "test-clarifying-question-format" :kind :fn :tokens 4 :rationale "feedback test function")
+    (:sym :name "test-concise-directive-format" :kind :fn :tokens 4 :rationale "feedback test function")
+    (:sym :name "run-tests" :kind :fn :tokens 2)
+    (:sym :name "main" :kind :fn :tokens 1)
+  ])
