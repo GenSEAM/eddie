@@ -1,7 +1,9 @@
-(module asl-eddie/eddie
-  :d "EDDIE: Terminal Coding Assistant & Autonomous Execution Loop in ASL"
+(module asl-agent/eddie
+  :d "GSA (GenSEAM Agent): Terminal Coding Assistant & Autonomous Execution Loop in ASL"
   :x [TaskTier TaskIntent TriageVerdict TaskItem TaskPool OrchestrationPlan
       fast-triage consult-and-refine plan-execution evaluate-circuit-breaker
+      agent-run agent-version agent-banner
+      gsa-run gsa-version gsa-banner
       eddie-run eddie-version eddie-banner]
   :i [(core/strings :a s) (policy :a pol) (agent :a ag) (feedback :a fb) (tui :a tui)])
 
@@ -73,13 +75,34 @@
   :d "Evaluates circuit breaker"
   (>= failures threshold))
 
+(df agent-version [] -> Str
+  :d "Returns current GSA version string."
+  "0.1.0")
+
+(df gsa-version [] -> Str
+  (agent-version))
+
 (df eddie-version [] -> Str
   :d "Returns current Eddie version string."
   "0.1.0")
 
+(df agent-banner [] -> Str
+  :d "Renders compact GSA terminal banner."
+  "=== GSA (GenSEAM Agent) - Pure ASL Autonomous Coding Agent ===")
+
+(df gsa-banner [] -> Str
+  (agent-banner))
+
 (df eddie-banner [] -> Str
   :d "Renders compact terminal banner."
-  "=== Eddie Autonomous Coding Agent (ASL Harness) ===")
+  "=== GSA (GenSEAM Agent) - Pure ASL Autonomous Coding Agent ===")
+
+(df agent-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  :d "Executes interactive terminal session on prompt with capability sandbox."
+  (eddie-run prompt workspace-root autonomy))
+
+(df gsa-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  (eddie-run prompt workspace-root autonomy))
 
 (df eddie-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
   :d "Executes interactive terminal session on prompt with capability sandbox."
