@@ -270,5 +270,10 @@
     (:sym :name "test-telemetry-counters" :kind :fn :tokens 3 :rationale "cli test function")
     (:sym :name "test-repl-slash-commands" :kind :fn :tokens 4 :rationale "cli test function")
     (:sym :name "test-format-cli-help" :kind :fn :tokens 4 :rationale "cli test function")
+    ;; Phase 48: Master System E2E symbols
+    (:sym :name "test-e2e-feedback-and-vmm-hydration" :kind :fn :tokens 6 :rationale "master e2e test function")
+    (:sym :name "test-e2e-onion-pipeline-and-horizon" :kind :fn :tokens 6 :rationale "master e2e test function")
+    (:sym :name "test-e2e-canonical-dispatch-and-supervisor" :kind :fn :tokens 6 :rationale "master e2e test function")
+    (:sym :name "test-e2e-snapshot-and-cli-inference" :kind :fn :tokens 6 :rationale "master e2e test function")
     (:sym :name "main" :kind :fn :tokens 1)
   ])
