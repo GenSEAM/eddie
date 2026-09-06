@@ -1,5 +1,5 @@
-(:package @genseam/asl-eddie
+(:package @genseam/asl-agent
  :version "0.1.0"
- :entry "src/eddie.asl"
- :description "Ultra-low-latency real-time voice and agent conversation loop"
+ :entry "src/agent.asl"
+ :description "GSA (GenSEAM Agent): Autonomous Coding Agent, Adaptive Swarm Orchestrator & Task Pool in ASL"
  :dependencies [])
