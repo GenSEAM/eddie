@@ -1,4 +1,4 @@
-(module asl-eddie/supervisor-test
+(module asl-agent/supervisor-test
   :d "Unit tests for feedback process supervisor and 10s sliding idle watchdog."
   :x [test-supervisor-config
       test-supervised-env-injection

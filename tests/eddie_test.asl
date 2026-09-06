@@ -1,4 +1,4 @@
-(module asl-eddie/test
+(module asl-agent/test
   :d "Unit tests for EDDIE orchestrator in ASL"
   :x [run-tests])
 

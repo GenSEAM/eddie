@@ -1,4 +1,4 @@
-(module asl-eddie/cli-test
+(module asl-agent/cli-test
   :d "Unit tests for standalone CLI argument processor, phased inference, and REPL."
   :x [test-cli-options-and-parsing
       test-phased-inference-parameters

@@ -1,4 +1,4 @@
-(module asl-eddie/agent
+(module asl-agent/agent
   :d "Native ReAct agent loop, tool dispatch, autonomy levels, and capability sandboxing."
   :x [AgentState AgentSession StepResult
       make-agent-session make-autonomy-session step-agent run-bounded-session]

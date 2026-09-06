@@ -1,4 +1,4 @@
-(module asl-eddie/vmm
+(module asl-agent/vmm
   :d "Prompt Virtual Memory Manager (VMM) and segmented context slot hygiene."
   :x [ContextSlot VmmSlot VmmState
       slot-invariants slot-receipts slot-pinned slot-working

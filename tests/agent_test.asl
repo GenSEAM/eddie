@@ -1,5 +1,5 @@
-(module asl-eddie/test
-  :d "Unit tests for asl-eddie autonomous agent: policy sandbox, triage, and ReAct loop."
+(module asl-agent/test
+  :d "Unit tests for asl-agent autonomous agent: policy sandbox, triage, and ReAct loop."
   :x [main]
   :i [(policy :a pol) (triage :a tr) (agent :a ag)])
 
@@ -24,11 +24,11 @@
     (.-success res)))
 
 (df ! main [(args (List Str))] -> (Result Unit IoError)
-  :d "Runs unit tests for asl-eddie agent suite."
+  :d "Runs unit tests for asl-agent agent suite."
   (if (and (and (test-policy-sandbox)
                 (test-triage-collapse))
            (test-agent-react-step))
-    (let [(u (println "asl-eddie agent tests passed cleanly"))]
+    (let [(u (println "asl-agent agent tests passed cleanly"))]
       (ok ()))
-    (let [(u (eprintln "asl-eddie agent test failure"))]
+    (let [(u (eprintln "asl-agent agent test failure"))]
       (err (other)))))

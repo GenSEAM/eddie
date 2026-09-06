@@ -1,4 +1,4 @@
-(module asl-eddie/master-e2e-test
+(module asl-agent/master-e2e-test
   :d "Comprehensive end-to-end integration test verifying all subsystems of SPEC-2026-EDDIE-SYSTEM-v3.0."
   :x [test-e2e-feedback-and-vmm-hydration
       test-e2e-onion-pipeline-and-horizon

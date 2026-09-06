@@ -1,4 +1,4 @@
-(module asl-eddie/policy-test
+(module asl-agent/policy-test
   :d "Unit tests for Autonomy Levels (L0/L1/L2) and capability sandboxing."
   :x [test-l0-ask-mode
       test-l1-guarded-mode

@@ -1,4 +1,4 @@
-(module asl-eddie/ablation-metrics-test
+(module asl-agent/ablation-metrics-test
   :d "Empirical ablation suite measuring WITH vs WITHOUT deltas across Eddie TUI improvements."
   :x [test-feedback-token-ablation
       test-autonomy-friction-ablation

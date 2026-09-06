@@ -1,4 +1,4 @@
-(module asl-eddie/onion-test
+(module asl-agent/onion-test
   :d "Unit tests for composable onion middleware pipeline and filters."
   :x [test-onion-pipeline-normal
       test-onion-firewall-block

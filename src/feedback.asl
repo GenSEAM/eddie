@@ -1,4 +1,4 @@
-(module asl-eddie/feedback
+(module asl-agent/feedback
   :d "Zero-fluff feedback and requirement clarification engine: parses ambiguous requests, generates concise options, and enforces radical token economy."
   :x [ClarificationOption
       RefinedRequirement

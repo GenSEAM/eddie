@@ -1,4 +1,4 @@
-(module asl-eddie/snapshot
+(module asl-agent/snapshot
   :d "Git-mergeable textual snapshot engine for deterministic state and intent persistence."
   :x [SnapshotKind SnapshotEntity SnapshotGraph
       kind-req kind-decision kind-invariant kind-edge

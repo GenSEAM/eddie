@@ -1,4 +1,4 @@
-(module asl-eddie/tui
+(module asl-agent/tui
   :d "High-efficiency terminal UI renderer: streaming chat turns, folding tool calls, and session telemetry."
   :x [TuiHeader
       make-tui-header

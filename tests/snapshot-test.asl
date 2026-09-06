@@ -1,4 +1,4 @@
-(module asl-eddie/snapshot-test
+(module asl-agent/snapshot-test
   :d "Unit tests for git-mergeable textual snapshot engine."
   :x [test-snapshot-entity-formatting
       test-snapshot-sorting-serialization

@@ -1,4 +1,4 @@
-(module asl-eddie/live-app-test
+(module asl-agent/live-app-test
   :d "End-to-end integration test verifying Eddie autonomous coding agent on real game application in sandbox."
   :x [test-live-game-specification
       test-live-game-execution-loop

@@ -1,4 +1,4 @@
-(module asl-eddie/vmm-test
+(module asl-agent/vmm-test
   :d "Unit tests for Prompt VMM segmented context slot hygiene."
   :x [test-vmm-initialization
       test-vmm-knowledge-lifecycle

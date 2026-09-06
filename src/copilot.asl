@@ -1,4 +1,4 @@
-(module asl-eddie/copilot
+(module asl-agent/copilot
   :d "Perceptual pointer dereferencing, shadow staging ground, and intent graph traceability."
   :x [PointerKind PointerRef StagedProposal
       ptr-dom ptr-log ptr-ast ptr-vision

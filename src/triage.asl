@@ -1,4 +1,4 @@
-(module asl-eddie/triage
+(module asl-agent/triage
   :d "Formal AST intent triage and multi-query collapse engine."
   :x [WorkspaceContext TriageDecision
       make-workspace-context make-triage-decision

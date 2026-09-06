@@ -1,4 +1,4 @@
-(module asl-eddie/onion
+(module asl-agent/onion
   :d "Composable onion middleware pipeline and event-driven filter stack."
   :x [MiddlewareKind MiddlewareResult MiddlewareContext MiddlewareItem OnionPipeline
       kind-filter kind-pre-call kind-mutate kind-post-call kind-audit

@@ -1,4 +1,4 @@
-(module asl-eddie/policy
+(module asl-agent/policy
   :d "Capability-based sandboxing, autonomy levels, and zero-spam permission policy."
   :x [AutonomyLevel ActionCategory PermissionManifest PermissionResult
       level-ask level-guarded level-auto

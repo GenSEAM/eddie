@@ -1,4 +1,4 @@
-(module asl-eddie/supervisor
+(module asl-agent/supervisor
   :d "Feedback process supervisor, sliding 10s idle watchdog, and interactive deadlock trapping."
   :x [ProcessStatus SupervisorConfig ProcessReceipt
       proc-init proc-running proc-idle-timeout proc-deadlock proc-completed proc-failed

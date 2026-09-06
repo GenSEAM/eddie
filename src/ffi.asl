@@ -1,4 +1,4 @@
-(module asl-eddie/ffi
+(module asl-agent/ffi
   :d "Bidirectional host capability FFI declarations and contract."
   :x [HostCallRequest HostCallResponse
       make-host-request make-host-response

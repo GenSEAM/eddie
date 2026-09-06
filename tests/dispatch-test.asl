@@ -1,4 +1,4 @@
-(module asl-eddie/dispatch-test
+(module asl-agent/dispatch-test
   :d "Unit tests for canonical native tool dispatcher parity."
   :x [test-canonical-tool-enumeration
       test-dispatch-preload-and-health

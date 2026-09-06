@@ -1,4 +1,4 @@
-(module asl-eddie/feedback-test
+(module asl-agent/feedback-test
   :d "Unit tests for zero-fluff feedback and requirement refinement engine."
   :x [test-ambiguity-detection
       test-strip-polite-fluff

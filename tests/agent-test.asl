@@ -1,4 +1,4 @@
-(module asl-eddie/agent-test
+(module asl-agent/agent-test
   :d "Unit tests for Core Agent loop, autonomy levels, and eddie-run entrypoint."
   :x [test-agent-autonomy-levels
       test-agent-tui-folding-history

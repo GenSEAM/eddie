@@ -1,4 +1,4 @@
-(module asl-eddie/horizon
+(module asl-agent/horizon
   :d "Graph-horizon preloading and architectural health matrix engine."
   :x [HorizonDepth HorizonRequest HorizonResult HealthMatrix
       depth-full-ast depth-interface-stubs depth-module-names
@@ -71,7 +71,7 @@
          :tokens-used 320
          :ast-body (str "(df " tgt " [] -> Bool (true))")
          :interface-stubs (list (str "(sig caller-1 [" tgt "] -> Str)"))
-         :boundary-modules (list "asl-eddie/policy" "asl-eddie/tui"))))))
+         :boundary-modules (list "asl-agent/policy" "asl-agent/tui"))))))
 
 (df compute-health-matrix [(modules (List Str)) (has-cycle Bool)] -> HealthMatrix
   :d "Calculates circular imports, hotspots, and unused exports across modules."

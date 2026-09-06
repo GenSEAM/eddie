@@ -1,4 +1,4 @@
-(module asl-eddie/horizon-test
+(module asl-agent/horizon-test
   :d "Unit tests for graph-horizon preloading and architectural health matrix."
   :x [test-horizon-depth-expansion
       test-horizon-budget-bounding

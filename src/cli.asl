@@ -1,4 +1,4 @@
-(module asl-eddie/cli
+(module asl-agent/cli
   :d "Standalone CLI argument processor, phased inference controller, and REPL driver."
   :x [InferencePhase InferenceConfig TelemetryCounters CliOptions
       phase-inspect phase-plan phase-ast-patch phase-reason-debug

@@ -1,4 +1,4 @@
-(module asl-eddie/dispatch
+(module asl-agent/dispatch
   :d "Canonical native tool dispatcher implementing the 8-tool interface with onion middleware."
   :x [ToolDispatchResult
       make-dispatch-result is-canonical-tool?

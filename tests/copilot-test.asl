@@ -1,4 +1,4 @@
-(module asl-eddie/copilot-test
+(module asl-agent/copilot-test
   :d "Unit tests for perceptual pointer dereferencing, shadow staging, and intent traceability."
   :x [test-pointer-dereference
       test-staging-lifecycle

@@ -1,4 +1,4 @@
-(module asl-eddie/tui-test
+(module asl-agent/tui-test
   :d "Unit tests for Eddie TUI terminal presentation and tool formatting."
   :x [test-tui-header-rendering
       test-tool-call-folding
