@@ -71,8 +71,8 @@
 
 (df format-cli-help [] -> Str
   :d "Formats the standard CLI usage help string."
-  (str "EDDIE - Autonomous Cognitive Agent & Deterministic Execution Ecosystem\n"
-       "Usage: eddie [options] [directive]\n\n"
+  (str "GSA (GenSEAM Agent) - Autonomous Cognitive Agent & Deterministic Execution Loop in ASL\n"
+       "Usage: gsa [options] [directive] (alias: gs)\n\n"
        "Options:\n"
        "  -a, --autonomy <tier>  Autonomy level: ask (L0), guarded (L1), auto (L2) [default: guarded]\n"
        "  -m, --model <id>       Inference model ID [default: gemma-4-31b-it]\n"
