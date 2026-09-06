@@ -1,5 +1,5 @@
 (:package @genseam/asl-eddie
- :version "0.3.0"
+ :version "0.1.0"
  :entry "src/eddie.asl"
  :description "Ultra-low-latency real-time voice and agent conversation loop"
  :dependencies [])

@@ -75,7 +75,7 @@
 
 (df eddie-version [] -> Str
   :d "Returns current Eddie version string."
-  "0.3.0")
+  "0.1.0")
 
 (df eddie-banner [] -> Str
   :d "Renders compact terminal banner."

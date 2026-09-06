@@ -2,7 +2,7 @@
 ;; @genseam/asl-eddie
 (:grammar
   :package @genseam/asl-eddie
-  :version "0.3.0"
+  :version "0.1.0"
   :tokens-baseline 2
   :symbols [
     ;; Agent
