@@ -1,8 +1,8 @@
 (module asl-eddie/agent
-  :d "Native ReAct agent loop and capability-bounded execution state machine."
+  :d "Native ReAct agent loop, tool dispatch, autonomy levels, and capability sandboxing."
   :x [AgentState AgentSession StepResult
-      make-agent-session step-agent run-bounded-session]
-  :i [(policy :a pol) (ffi :a ffi)])
+      make-agent-session make-autonomy-session step-agent run-bounded-session]
+  :i [(policy :a pol) (ffi :a ffi) (tui :a tui)])
 
 (dfs AgentState
   (:f phase Str "State phase: idle, reasoning, tool_eval, tool_exec, complete, error")
@@ -15,6 +15,7 @@
 (dfs AgentSession
   (:f state AgentState "Current execution state")
   (:f manifest pol/PermissionManifest "Sandbox capability boundaries")
+  (:f autonomy pol/AutonomyLevel "Current autonomy permission tier")
   (:f history (List Str) "Trace log of ReAct thought-action-observation cycles"))
 
 (dfs StepResult
@@ -23,7 +24,11 @@
   (:f success Bool "True if step completed without violation"))
 
 (df make-agent-session [(goal Str) (manifest pol/PermissionManifest)] -> AgentSession
-  :d "Initializes an AgentSession with standard 10-step ceiling."
+  :d "Initializes an AgentSession with standard 10-step ceiling and default L2:FullAuto."
+  (make-autonomy-session goal manifest (pol/level-auto)))
+
+(df make-autonomy-session [(goal Str) (manifest pol/PermissionManifest) (autonomy pol/AutonomyLevel)] -> AgentSession
+  :d "Initializes an AgentSession with specified autonomy tier."
   (AgentSession
     :state (AgentState
              :phase "idle"
@@ -33,14 +38,16 @@
              :last-output ""
              :is-terminal false)
     :manifest manifest
+    :autonomy autonomy
     :history (list)))
 
 (df step-agent [(session AgentSession) (tool-name Str) (target-path Str) (payload Str)] -> StepResult
-  :d "Executes one ReAct step under capability sandboxing rules."
+  :d "Executes one ReAct step under capability sandboxing and autonomy rules."
   (let [(st (.-state session))
         (cur-step (.-current-step st))
         (max-step (.-max-steps st))
-        (manifest (.-manifest session))]
+        (manifest (.-manifest session))
+        (autonomy (.-autonomy session))]
     (cond
       ((.-is-terminal st)
        (StepResult
@@ -59,6 +66,7 @@
            :session (AgentSession
                       :state updated-st
                       :manifest manifest
+                      :autonomy autonomy
                       :history (list-cons "step-budget-exceeded" (.-history session)))
            :action-taken "aborted: step budget ceiling"
            :success false)))
@@ -74,11 +82,12 @@
            :session (AgentSession
                       :state updated-st
                       :manifest manifest
+                      :autonomy autonomy
                       :history (list-cons (str "final-answer: " payload) (.-history session)))
            :action-taken "finish"
            :success true)))
       (:else
-       (let [(perm (pol/check-permission "access" target-path manifest))]
+       (let [(perm (pol/check-autonomy-permission tool-name target-path manifest autonomy))]
          (if (not (.-allowed perm))
            (let [(err-msg (str "Policy violation: " (.-reason perm)))
                  (updated-st (AgentState
@@ -92,26 +101,48 @@
                :session (AgentSession
                           :state updated-st
                           :manifest manifest
+                          :autonomy autonomy
                           :history (list-cons err-msg (.-history session)))
                :action-taken (str "denied: " (.-code perm))
                :success false))
-           (let [(ffi-res (ffi/host-call "fs" "read" target-path))
-                 (updated-st (AgentState
-                               :phase "reasoning"
-                               :current-step (+ cur-step 1)
-                               :max-steps max-step
-                               :goal (.-goal st)
-                               :last-output (mt ffi-res
-                                              ((ok val) val)
-                                              ((err e) e))
-                               :is-terminal false))]
-             (StepResult
-               :session (AgentSession
-                          :state updated-st
-                          :manifest manifest
-                          :history (list-cons (str "exec:" tool-name ":" target-path) (.-history session)))
-               :action-taken (str "executed:" tool-name)
-               :success true))))))))
+           (if (not (.-silent perm))
+             (let [(prompt-msg (str "Confirmation required: " (.-reason perm)))
+                   (updated-st (AgentState
+                                 :phase "reasoning"
+                                 :current-step (+ cur-step 1)
+                                 :max-steps max-step
+                                 :goal (.-goal st)
+                                 :last-output prompt-msg
+                                 :is-terminal false))]
+               (StepResult
+                 :session (AgentSession
+                            :state updated-st
+                            :manifest manifest
+                            :autonomy autonomy
+                            :history (list-cons prompt-msg (.-history session)))
+                 :action-taken (str "prompt:" tool-name)
+                 :success true))
+             (let [(cap (if (or (= tool-name "read") (or (= tool-name "write") (= tool-name "patch"))) "fs" "exec"))
+                   (act (if (= tool-name "read") "read" (if (= tool-name "write") "write" "exec")))
+                   (ffi-res (ffi/host-call cap act target-path))
+                   (folding-log (tui/format-tool-call tool-name target-path "ok"))
+                   (updated-st (AgentState
+                                 :phase "reasoning"
+                                 :current-step (+ cur-step 1)
+                                 :max-steps max-step
+                                 :goal (.-goal st)
+                                 :last-output (mt ffi-res
+                                                ((ok val) val)
+                                                ((err e) e))
+                                 :is-terminal false))]
+               (StepResult
+                 :session (AgentSession
+                            :state updated-st
+                            :manifest manifest
+                            :autonomy autonomy
+                            :history (list-cons folding-log (.-history session)))
+                 :action-taken (str "executed:" tool-name)
+                 :success true)))))))))
 
 (df run-bounded-session [(session AgentSession)] -> AgentSession
   :d "Advances session to terminal state if idle."
@@ -119,3 +150,4 @@
     session
     (let [(res (step-agent session "finish" "" "goal completed"))]
       (.-session res))))
+

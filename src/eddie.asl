@@ -1,8 +1,9 @@
 (module asl-eddie/eddie
-  :d "EDDIE: 3-Layer Superposition Swarm Orchestrator in ASL"
+  :d "EDDIE: Terminal Coding Assistant & Autonomous Execution Loop in ASL"
   :x [TaskTier TaskIntent TriageVerdict TaskItem TaskPool OrchestrationPlan
-           fast-triage consult-and-refine plan-execution evaluate-circuit-breaker]
-  :i [(core/strings :a s)])
+      fast-triage consult-and-refine plan-execution evaluate-circuit-breaker
+      eddie-run eddie-version eddie-banner]
+  :i [(core/strings :a s) (policy :a pol) (agent :a ag) (feedback :a fb) (tui :a tui)])
 
 (dfe TriageVerdict
   (:c instant [] "Layer 1: Instant execution (<0.04ms)")
@@ -71,3 +72,30 @@
 (df evaluate-circuit-breaker [(failures Int64) (threshold Int64)] -> Bool
   :d "Evaluates circuit breaker"
   (>= failures threshold))
+
+(df eddie-version [] -> Str
+  :d "Returns current Eddie version string."
+  "0.3.0")
+
+(df eddie-banner [] -> Str
+  :d "Renders compact terminal banner."
+  "=== Eddie Autonomous Coding Agent (ASL Harness) ===")
+
+(df eddie-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  :d "Executes interactive terminal session on prompt with capability sandbox."
+  (let [(manifest (pol/make-manifest workspace-root (list) "/tmp" false))
+        (req (fb/refine-user-prompt prompt (list workspace-root)))]
+    (if (.-is-ambiguous req)
+      (let [(opts (list (fb/ClarificationOption :key "1" :label "Execute in current workspace")
+                        (fb/ClarificationOption :key "2" :label "Run in isolated worktree")))
+            (q (fb/format-clarifying-question req opts))]
+        q)
+      (let [(sess (ag/make-autonomy-session (.-clarified-goal req) manifest autonomy))
+            (s1 (ag/step-agent sess "read" (str workspace-root "/src/main.asl") ""))
+            (s2 (ag/step-agent (.-session s1) "finish" "" "task completed successfully"))
+            (h (tui/make-tui-header "gemma-4-31b-it" autonomy))
+            (summary (tui/format-session-summary h 2))]
+        (str (tui/format-tui-header h) "\n"
+             (fb/format-concise-directive req) "\n"
+             summary)))))
+

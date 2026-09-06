@@ -10,6 +10,7 @@
     (:sym :name "AgentSession" :kind :type :tokens 1)
     (:sym :name "StepResult" :kind :type :tokens 1)
     (:sym :name "make-agent-session" :kind :fn :tokens 3 :rationale "agent session constructor")
+    (:sym :name "make-autonomy-session" :kind :fn :tokens 3 :rationale "autonomy session constructor")
     (:sym :name "step-agent" :kind :fn :tokens 2)
     (:sym :name "run-bounded-session" :kind :fn :tokens 3 :rationale "bounded react loop execution")
 
@@ -24,6 +25,9 @@
     (:sym :name "consult-and-refine" :kind :fn :tokens 3 :rationale "consultative refinement")
     (:sym :name "plan-execution" :kind :fn :tokens 2)
     (:sym :name "evaluate-circuit-breaker" :kind :fn :tokens 3 :rationale "circuit breaker evaluation")
+    (:sym :name "eddie-run" :kind :fn :tokens 2)
+    (:sym :name "eddie-version" :kind :fn :tokens 2)
+    (:sym :name "eddie-banner" :kind :fn :tokens 2)
 
     ;; Feedback
     (:sym :name "ClarificationOption" :kind :type :tokens 1)
@@ -106,6 +110,10 @@
     (:sym :name "test-refine-prompt" :kind :fn :tokens 3 :rationale "feedback test function")
     (:sym :name "test-clarifying-question-format" :kind :fn :tokens 4 :rationale "feedback test function")
     (:sym :name "test-concise-directive-format" :kind :fn :tokens 4 :rationale "feedback test function")
+    (:sym :name "test-agent-autonomy-levels" :kind :fn :tokens 4 :rationale "agent test function")
+    (:sym :name "test-agent-tui-folding-history" :kind :fn :tokens 5 :rationale "agent test function")
+    (:sym :name "test-eddie-run-clarification" :kind :fn :tokens 4 :rationale "agent test function")
+    (:sym :name "test-eddie-run-direct" :kind :fn :tokens 4 :rationale "agent test function")
     (:sym :name "run-tests" :kind :fn :tokens 2)
     (:sym :name "main" :kind :fn :tokens 1)
   ])
