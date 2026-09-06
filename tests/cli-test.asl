@@ -34,8 +34,10 @@
 
 (df test-repl-slash-commands [] -> Bool
   (and (== (cli/process-repl-command "/exit") "EXIT")
-       (and (>= (len (cli/process-repl-command "/status")) 10)
-            (>= (len (cli/process-repl-command "/telemetry")) 10))))
+       (and (== (cli/process-repl-command "/quit") "EXIT")
+            (and (== (cli/process-repl-command "/clear") "CLEAR")
+                 (and (>= (len (cli/process-repl-command "/status")) 10)
+                      (>= (len (cli/process-repl-command "/telemetry")) 10))))))
 
 (df test-format-cli-help [] -> Bool
   (let [(h (cli/format-cli-help))]

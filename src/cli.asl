@@ -85,8 +85,9 @@
 (df process-repl-command [(cmd Str)] -> Str
   :d "Processes special interactive slash commands in REPL mode."
   (cond
-    ((== cmd "/exit") "EXIT")
+    ((or (== cmd "/exit") (== cmd "/quit")) "EXIT")
     ((== cmd "/help") (format-cli-help))
     ((== cmd "/status") "STATUS: System Online | Invariants: Active | Middleware: OK")
     ((== cmd "/telemetry") "TELEMETRY: KV-Cache Hit: 92.4% | TTFT: 12ms | Slab: 3MB / 16MB")
+    ((== cmd "/clear") "CLEAR")
     (true (str "COMMAND: " cmd))))
