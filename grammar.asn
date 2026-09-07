@@ -103,13 +103,16 @@
     (:sym :name "format-chat-msg" :kind :fn :tokens 3 :rationale "chat message formatter")
     (:sym :name "format-agent-badge" :kind :fn :tokens 3 :rationale "agent role and routing indicator badge")
     (:sym :name "format-thinking-block" :kind :fn :tokens 3 :rationale "quarantined reasoning channel formatter")
+    (:sym :name "format-reflection-channel" :kind :fn :tokens 3 :rationale "quarantined epistemic reflection channel formatter")
     (:sym :name "format-context-bar" :kind :fn :tokens 3 :rationale "context window utilization bar")
     (:sym :name "format-diff-preview" :kind :fn :tokens 3 :rationale "compact file diff summary formatter")
+    (:sym :name "format-context-and-diff-bar" :kind :fn :tokens 5 :rationale "combined context window utilization and diff preview summary bar")
     (:sym :name "format-session-summary" :kind :fn :tokens 3 :rationale "session summary formatter")
 
     ;; Test symbols
     (:sym :name "test-tui-header-rendering" :kind :fn :tokens 4 :rationale "Cannot be reduced to 'test-header': isolates terminal ANSI header styling and status bar formatting from HTTP headers")
     (:sym :name "test-orchestration-window-header" :kind :fn :tokens 4 :rationale "verifies tui header with mode")
+    (:sym :name "test-tui-orchestration-window" :kind :fn :tokens 4 :rationale "verifies terminal UI orchestration window header, reflection channel, tool folding, and context diff bar")
     (:sym :name "test-tool-call-folding" :kind :fn :tokens 4 :rationale "Cannot be reduced to 'test-folding': verifies interactive folding of large tool invocation payloads in terminal UI")
     (:sym :name "test-tool-call-folding-summary" :kind :fn :tokens 4 :rationale "verifies collapsible tool call formatting")
     (:sym :name "test-spinner-formatting" :kind :fn :tokens 3 :rationale "Cannot be reduced to 'test-spinner': verifies ANSI spinner frame sequencing and active step status updates")

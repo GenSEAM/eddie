@@ -14,6 +14,7 @@
       format-mesh-telemetry
       format-context-bar
       format-diff-preview
+      format-context-and-diff-bar
       format-session-summary]
   :i [(policy :a pol)])
 
@@ -49,7 +50,7 @@
   :d "Renders compact 1-line terminal status header with active model and pipeline mode."
   (let [(total-tokens (+ (.-prompt-tokens header) (.-completion-tokens header)))
         (lvl-str (pol/autonomy-level-to-string (.-autonomy header)))]
-    (str "┌── [Eddie TUI] Model: " (.-model-name header)
+    (str "┌── [Eddie TUI: Orchestration Window] Model: " (.-model-name header)
          " | Mode: " (.-pipeline-mode header)
          " | Autonomy: " lvl-str
          " | Tokens: " (string-from-int64 total-tokens)
@@ -78,7 +79,7 @@
 
 (df format-reflection-channel [(thought Str)] -> Str
   :d "Formats quarantined 7-stage epistemic reflection channel with clean indentation."
-  (str "  🧠 [Quarantined Reflection Channel]\n     | " (string-trim thought)))
+  (str "  🧠 [Quarantined Reflection Channel]: " (string-trim thought)))
 
 (df format-context-bar [(current I64) (limit I64)] -> Str
   :d "Formats context window memory utilization bar."
@@ -89,6 +90,10 @@
 (df format-diff-preview [(path Str) (added I64) (removed I64)] -> Str
   :d "Formats compact file diff line summary."
   (str "  Δ [" path "] +" (string-from-int64 added) " -" (string-from-int64 removed) " lines"))
+
+(df format-context-and-diff-bar [(current I64) (limit I64) (path Str) (added I64) (removed I64)] -> Str
+  :d "Formats combined context window utilization bar and diff preview summary."
+  (str (format-context-bar current limit) " " (format-diff-preview path added removed)))
 
 (df format-tool-call [(tool Str) (target Str) (status Str)] -> Str
   :d "Formats compact 1-line folding tool block for terminal output."

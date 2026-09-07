@@ -2,6 +2,7 @@
   :d "Unit tests for Eddie TUI terminal presentation and tool formatting."
   :x [test-tui-header-rendering
       test-orchestration-window-header
+      test-tui-orchestration-window
       test-tool-call-folding
       test-tool-call-folding-summary
       test-spinner-formatting
@@ -91,6 +92,20 @@
     (and (string-contains? dp "Δ [src/main.asl]")
          (string-contains? dp "+12 -3 lines"))))
 
+(df test-tui-orchestration-window [] -> Bool
+  :d "Verifies terminal UI orchestration window header, reflection channel, tool folding, and context diff bar."
+  (let [(hdr (tui/make-tui-header-with-mode "gemma-4-31b-it" "fast" (pol/level-guarded)))
+        (h-str (tui/format-tui-header hdr))
+        (r-str (tui/format-reflection-channel "Epistemic anchor active"))
+        (t-str (tui/format-tool-call "read" "gsa/src/tui.asl" "completed"))
+        (c-str (tui/format-context-and-diff-bar 4096 131072 "gsa/src/tui.asl" 15 2))]
+    (and (string-contains? h-str "Eddie TUI: Orchestration Window")
+         (and (string-contains? h-str "Autonomy: ")
+              (and (string-contains? r-str "🧠 [Quarantined Reflection Channel]:")
+                   (and (string-contains? t-str "▶ [read]")
+                        (and (string-contains? c-str "📊 [Context:")
+                             (string-contains? c-str "Δ ["))))))))
+
 (df run-tests [] -> Bool
   (do
     (assert (test-tui-header-rendering))
@@ -105,6 +120,7 @@
     (assert (test-reflection-channel))
     (assert (test-mesh-telemetry))
     (assert (test-context-bar))
-    (assert (test-diff-preview))))
+    (assert (test-diff-preview))
+    (assert (test-tui-orchestration-window))))
 
 
