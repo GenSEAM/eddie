@@ -95,8 +95,10 @@
     ;; TUI
     (:sym :name "TuiHeader" :kind :type :tokens 1)
     (:sym :name "make-tui-header" :kind :fn :tokens 3 :rationale "tui header constructor")
+    (:sym :name "make-tui-header-with-mode" :kind :fn :tokens 3 :rationale "tui header constructor with explicit mode")
     (:sym :name "format-tui-header" :kind :fn :tokens 3 :rationale "tui header renderer")
     (:sym :name "format-tool-call" :kind :fn :tokens 3 :rationale "tool call folding renderer")
+    (:sym :name "format-tool-call-fold" :kind :fn :tokens 3 :rationale "collapsible tool call folding renderer")
     (:sym :name "format-spinner-status" :kind :fn :tokens 3 :rationale "terminal spinner renderer")
     (:sym :name "format-chat-msg" :kind :fn :tokens 3 :rationale "chat message formatter")
     (:sym :name "format-agent-badge" :kind :fn :tokens 3 :rationale "agent role and routing indicator badge")
@@ -107,7 +109,9 @@
 
     ;; Test symbols
     (:sym :name "test-tui-header-rendering" :kind :fn :tokens 4 :rationale "Cannot be reduced to 'test-header': isolates terminal ANSI header styling and status bar formatting from HTTP headers")
+    (:sym :name "test-orchestration-window-header" :kind :fn :tokens 4 :rationale "verifies tui header with mode")
     (:sym :name "test-tool-call-folding" :kind :fn :tokens 4 :rationale "Cannot be reduced to 'test-folding': verifies interactive folding of large tool invocation payloads in terminal UI")
+    (:sym :name "test-tool-call-folding-summary" :kind :fn :tokens 4 :rationale "verifies collapsible tool call formatting")
     (:sym :name "test-spinner-formatting" :kind :fn :tokens 3 :rationale "Cannot be reduced to 'test-spinner': verifies ANSI spinner frame sequencing and active step status updates")
     (:sym :name "test-chat-msg-formatting" :kind :fn :tokens 4 :rationale "Cannot be reduced to 'test-chat': verifies terminal message wrapping, role markers, and timestamp alignment")
     (:sym :name "test-agent-badge" :kind :fn :tokens 3 :rationale "Cannot be reduced to 'test-badge': verifies agent badge color coding, model tier labels, and autonomy indicators")
