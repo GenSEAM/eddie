@@ -37,9 +37,35 @@
         (s (tui/format-session-summary h 4))]
     (string-contains? s "✔ Session complete (4 turns)")))
 
+(df test-agent-badge [] -> Bool
+  (let [(b (tui/format-agent-badge "planner" "fable" "claude-fable-5-1"))]
+    (and (string-contains? b "👤 [Agent: planner]")
+         (string-contains? b "alias @fable"))))
+
+(df test-thinking-block [] -> Bool
+  (let [(tb (tui/format-thinking-block "Reasoning about AST tree"))]
+    (and (string-contains? tb "🧠 [Quarantined Reasoning Channel]")
+         (string-contains? tb "Reasoning about AST tree"))))
+
+(df test-context-bar [] -> Bool
+  (let [(cb (tui/format-context-bar 4096 131072))]
+    (and (string-contains? cb "📊 [Context:")
+         (string-contains? cb "4096 / 131072"))))
+
+
+(df test-diff-preview [] -> Bool
+  (let [(dp (tui/format-diff-preview "src/main.asl" 12 3))]
+    (and (string-contains? dp "Δ [src/main.asl]")
+         (string-contains? dp "+12 -3 lines"))))
+
 (df run-tests [] -> Bool
   (and (and (test-tui-header-rendering)
             (test-tool-call-folding))
        (and (test-spinner-formatting)
             (and (test-chat-msg-formatting)
-                 (test-session-summary)))))
+                 (and (test-session-summary)
+                      (and (test-agent-badge)
+                           (and (test-thinking-block)
+                                (and (test-context-bar)
+                                     (test-diff-preview)))))))))
+

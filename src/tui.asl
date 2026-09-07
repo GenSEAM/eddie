@@ -6,6 +6,10 @@
       format-tool-call
       format-spinner-status
       format-chat-msg
+      format-agent-badge
+      format-thinking-block
+      format-context-bar
+      format-diff-preview
       format-session-summary]
   :i [(policy :a pol)])
 
@@ -34,6 +38,24 @@
          " | Tokens: " (string-from-int64 total-tokens)
          " | Cost: $" (string-slice (string-from-float (.-session-cost header)) 0 6) " ──┐")))
 
+(df format-agent-badge [(role Str) (alias Str) (model Str)] -> Str
+  :d "Renders rich agent role and model routing indicator badge."
+  (str "  👤 [Agent: " role "] routed to alias @" alias " (" model ")"))
+
+(df format-thinking-block [(think Str)] -> Str
+  :d "Formats quarantined reasoning/thinking channel with clean indentation."
+  (str "  🧠 [Quarantined Reasoning Channel]\n     | " (string-trim think)))
+
+(df format-context-bar [(current I64) (limit I64)] -> Str
+  :d "Formats context window memory utilization bar."
+  (let [(pct (if (> limit 0) (/ (* current 100) limit) 0))]
+    (str "  📊 [Context: " (string-from-int64 current) " / "
+         (string-from-int64 limit) " tok (" (string-from-int64 pct) "%)]")))
+
+(df format-diff-preview [(path Str) (added I64) (removed I64)] -> Str
+  :d "Formats compact file diff line summary."
+  (str "  Δ [" path "] +" (string-from-int64 added) " -" (string-from-int64 removed) " lines"))
+
 (df format-tool-call [(tool Str) (target Str) (status Str)] -> Str
   :d "Formats compact 1-line folding tool block for terminal output."
   (str "  ▶ [" tool "] " target " → " status))
@@ -54,3 +76,4 @@
     (str "\n✔ Session complete (" (string-from-int64 turns) " turns). Total tokens: "
          (string-from-int64 total-toks) " ($"
          (string-slice (string-from-float (.-session-cost header)) 0 6) ")")))
+
