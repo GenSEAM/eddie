@@ -332,4 +332,11 @@
     (:sym :name "test-quarantined-thought-logging" :kind :fn :tokens 4 :rationale "Cannot be reduced to 'test-thought': verifies intermediate Chain-of-Thought reasoning quarantine to ASNL log")
     (:sym :name "test-pointer-offload-and-deref" :kind :fn :tokens 5 :rationale "Cannot be reduced to 'test-pointer': verifies perceptual pointer offloading descriptor generation and dereference roundtrip")
     (:sym :name "main" :kind :fn :tokens 1)
+
+    ;; Phase 337 ASN DAG Box-Art Symbols (asl-agent/asn-boxart)
+    (:sym :name "BoxNode" :kind :type :tokens 1)
+    (:sym :name "BoxEdge" :kind :type :tokens 1)
+    (:sym :name "format-box-badge" :kind :fn :tokens 3 :rationale "Formats status badge prefix for a node box label")
+    (:sym :name "render-tree-boxart" :kind :fn :tokens 3 :rationale "Renders hierarchical tree using Unicode box-drawing characters")
+    (:sym :name "render-dag-boxart" :kind :fn :tokens 3 :rationale "Renders DAG sequence into connected Unicode box-art frames")
   ])
