@@ -1,8 +1,13 @@
 (module asl-agent/agent
-  :d "Native ReAct agent loop, tool dispatch, autonomy levels, and capability sandboxing."
-  :x [AgentState AgentSession StepResult
-      make-agent-session make-autonomy-session step-agent run-bounded-session]
-  :i [(policy :a pol) (ffi :a ffi) (tui :a tui)])
+  :d "Sovereign Maintainer & Simple ReAct dual-mode agent orchestrator with sandboxing and capability dispatch."
+  :x [AgentState AgentSession StepResult AgentOperatingMode
+      mode-simple mode-maintainer
+      make-agent-session make-autonomy-session step-agent run-bounded-session run-in-mode]
+  :i [(policy :a pol) (ffi :a ffi) (tui :a tui) (task_dag :a dag) (model_router :a router) (review_breaker :a rev)])
+
+(dfe AgentOperatingMode
+  (:c mode-simple [] "Lightweight direct tool execution loop without DAG or review overhead")
+  (:c mode-maintainer [] "Sovereign project maintainer mode with DAG orchestration and model routing"))
 
 (dfs AgentState
   (:f phase Str "State phase: idle, reasoning, tool_eval, tool_exec, complete, error")
@@ -151,3 +156,22 @@
     (let [(res (step-agent session "finish" "" "goal completed"))]
       (.-session res))))
 
+(df run-in-mode [(mode AgentOperatingMode) (prompt Str) (workspace-root Str) (manifest pol/PermissionManifest) (autonomy pol/AutonomyLevel)] -> Str
+  :d "Routes session execution between simple direct mode and sovereign maintainer DAG mode."
+  (mt mode
+    ((mode-simple)
+     (let [(sess (make-autonomy-session prompt manifest autonomy))
+           (s1 (step-agent sess "read" (str workspace-root "/manifest.asn") ""))
+           (s2 (step-agent (.-session s1) "finish" "" "simple directive completed"))]
+       (str "SIMPLE-MODE: " (.-last-output (.-state (.-session s2))))))
+    ((mode-maintainer)
+     (let [(t1 (dag/make-task-node "t1-inspect" "Inspect workspace manifest" "triage" (list)))
+           (t2 (dag/make-task-node "t2-plan" "Plan architectural changes" "review" (list "t1-inspect")))
+           (t3 (dag/make-task-node "t3-impl" "Execute verified implementation" "coding" (list "t2-plan")))
+           (dag-plan (dag/make-task-dag "plan-01" (list t1 t2 t3)))
+           (router-matrix (router/default-routing-matrix))
+           (route-ep (router/resolve-model-for-role (router/role-coding) router-matrix false))
+           (rev-ex (rev/make-review-exchange prompt 2))]
+       (str "MAINTAINER-MODE: " (dag/format-dag-summary dag-plan)
+            " | Model: " (.-model-id route-ep)
+            " | Review ceiling: " (string-from-int64 (.-max-rounds rev-ex)) " rounds")))))

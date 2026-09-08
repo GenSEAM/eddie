@@ -4,6 +4,7 @@
       test-agent-tui-folding-history
       test-eddie-run-clarification
       test-eddie-run-direct
+      test-empty-goal-edge
       run-tests]
   :i [(policy :a pol) (agent :a ag) (eddie :a ed)])
 
@@ -65,6 +66,13 @@
     (assert (not (= (eddie/addie-version) "0.0.0")) "c-agent-neg-001: version not 0.0.0")
     true))
 
+(df test-empty-goal-edge [] -> Bool
+  (let [(manifest (pol/make-manifest "/tmp" (list) "/tmp" false))
+        (sess (ag/make-autonomy-session "" manifest (pol/level-auto)))]
+    (assert (= (.-goal (.-state sess)) "") "c-agent-edge-001: handles empty goal")
+    (assert (not (.-is-terminal (.-state sess))) "c-agent-edge-001: not terminal")
+    true))
+
 (df run-tests [] -> Bool
   (do
     (assert (test-agent-autonomy-levels) "autonomy levels pass")
@@ -73,4 +81,5 @@
     (assert (test-eddie-run-direct) "eddie direct pass")
     (assert (test-addie-run-direct) "addie direct pass")
     (assert (test-addie-version) "version pass")
+    (assert (test-empty-goal-edge) "empty goal edge pass")
     true))

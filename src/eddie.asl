@@ -81,6 +81,7 @@
   "0.1.0")
 
 (df gsa-version [] -> Str
+  :d "Returns current GSA version string alias."
   (agent-version))
 
 (df addie-version [] -> Str
@@ -96,6 +97,7 @@
   "=== GSA (GenSEAM Agent) - Pure ASL Autonomous Coding Agent ===")
 
 (df gsa-banner [] -> Str
+  :d "Renders compact GSA terminal banner alias."
   (agent-banner))
 
 (df addie-banner [] -> Str
@@ -133,5 +135,6 @@
   (addie-run prompt workspace-root autonomy))
 
 (df gsa-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  :d "Executes interactive terminal session on prompt with capability sandbox alias."
   (addie-run prompt workspace-root autonomy))
 

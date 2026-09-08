@@ -1,7 +1,7 @@
 ;; Agent Sovereign Declarative Test Case Store (ASN)
 (:case-registry
   :package "@genseam/asl-agent"
-  :feature "react-agent-loop-and-policy-sandboxing"
+  :feature "sovereign-maintainer-swarm-orchestrator"
   :cases [
     (:case :id "c-agent-pos-001" :polarity :positive :desc "make-agent-session initializes in idle phase with max-steps 10" :input "(:goal \"optimize wasm\")" :expect :ok)
     (:case :id "c-agent-pos-002" :polarity :positive :desc "step-agent executes within capability bounds under L2:FullAuto" :input "(:tool \"fs-read\" :target \"main.asl\")" :expect :ok)
@@ -10,5 +10,14 @@
     (:case :id "c-agent-neg-002" :polarity :negative :desc "step-agent rejects execution once max-steps ceiling is reached" :input "(:current-step 10 :max-steps 10)" :expect :err-step-ceiling)
     (:case :id "c-agent-edge-001" :polarity :edge :desc "make-autonomy-session handles empty goal string safely" :input "(:goal \"\")" :expect :ok)
     (:case :id "c-agent-edge-002" :polarity :edge :desc "session trace log prunes old observations to prevent context degradation" :input "(:history-count 50)" :expect :ok)
+    (:case :id "c-dag-pos-001" :polarity :positive :desc "DAG ready queue resolves independent root nodes" :input "(:nodes [\"t1\" \"t2\"] :deps [[] [\"t1\"]])" :expect :ok)
+    (:case :id "c-dag-pos-002" :polarity :positive :desc "DAG topologically unblocks dependent tasks upon upstream completion" :input "(:completed \"t1\")" :expect :ok)
+    (:case :id "c-dag-neg-001" :polarity :negative :desc "DAG deadlock detector flags circular dependencies" :input "(:cycle [\"t1\" \"t2\"])" :expect :err-dag-deadlock)
+    (:case :id "c-router-pos-001" :polarity :positive :desc "Model router assigns designated models to task roles" :input "(:role :review)" :expect :gemini-2.5-pro)
+    (:case :id "c-router-neg-001" :polarity :negative :desc "Offline mode forces graceful degradation to local SLM" :input "(:offline true)" :expect :gemma-4-31b-it)
+    (:case :id "c-rev-pos-001" :polarity :positive :desc "Review breaker approves on clean review" :input "(:verdict :approved)" :expect :ok)
+    (:case :id "c-rev-neg-001" :polarity :negative :desc "Review breaker trips and escalates to human on 2nd consecutive rejection" :input "(:rejections 2)" :expect :err-review-escalated)
+    (:case :id "c-mode-pos-001" :polarity :positive :desc "Simple mode runs direct tool execution bypass" :input "(:mode :simple)" :expect :ok)
+    (:case :id "c-mode-pos-002" :polarity :positive :desc "Maintainer mode initializes full DAG and review envelope" :input "(:mode :maintainer)" :expect :ok)
   ]
 )
