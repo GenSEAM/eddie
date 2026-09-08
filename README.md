@@ -1,9 +1,9 @@
-# @genseam/asl-agent (GSA: GenSEAM Agent)
+# @genseam/asl-agent (Agent: Sovereign Autonomous Coding Agent)
 
-**GSA** (*GenSEAM Agent*) is an autonomous, token-efficient coding agent, adaptive swarm orchestrator, and speculative execution engine in pure AgentScript (ASL).
+**Agent** is an autonomous, token-efficient coding agent, adaptive swarm orchestrator, and terminal TUI in pure AgentScript (ASL).
 
 ## Aliases
-- Binary CLI alias: `gsa` / `gs`
+- Binary CLI: `agent` (alias: `gsa`)
 - Package: `@genseam/asl-agent`
 
 ## Features

@@ -1,0 +1,14 @@
+;; Agent Sovereign Declarative Test Case Store (ASN)
+(:case-registry
+  :package "@genseam/asl-agent"
+  :feature "react-agent-loop-and-policy-sandboxing"
+  :cases [
+    (:case :id "c-agent-pos-001" :polarity :positive :desc "make-agent-session initializes in idle phase with max-steps 10" :input "(:goal \"optimize wasm\")" :expect :ok)
+    (:case :id "c-agent-pos-002" :polarity :positive :desc "step-agent executes within capability bounds under L2:FullAuto" :input "(:tool \"fs-read\" :target \"main.asl\")" :expect :ok)
+    (:case :id "c-agent-pos-003" :polarity :positive :desc "tui format-session-dashboard returns valid terminal boxart" :input "(:dashboard-width 80)" :expect :ok)
+    (:case :id "c-agent-neg-001" :polarity :negative :desc "L0:ReadOnly rejects destructive file write action" :input "(:tool \"fs-write\" :target \"main.asl\")" :expect :err-permission-denied)
+    (:case :id "c-agent-neg-002" :polarity :negative :desc "step-agent rejects execution once max-steps ceiling is reached" :input "(:current-step 10 :max-steps 10)" :expect :err-step-ceiling)
+    (:case :id "c-agent-edge-001" :polarity :edge :desc "make-autonomy-session handles empty goal string safely" :input "(:goal \"\")" :expect :ok)
+    (:case :id "c-agent-edge-002" :polarity :edge :desc "session trace log prunes old observations to prevent context degradation" :input "(:history-count 50)" :expect :ok)
+  ]
+)
