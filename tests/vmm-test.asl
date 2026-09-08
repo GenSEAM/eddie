@@ -13,8 +13,9 @@
   (let [(st (vmm/make-vmm-state "Never delete assertions" 4096))
         (slots (.-slots st))
         (s1 (get slots 0))]
-    (and (== (.-used-tokens st) 5)
-         (.-is-pinned s1))))
+    (assert (= (.-used-tokens st) 5) "used tokens matches initial count")
+    (assert (.-is-pinned s1) "slot 0 is pinned")
+    true))
 
 (df test-vmm-knowledge-lifecycle [] -> Bool
   (let [(st0 (vmm/make-vmm-state "Root rules" 4096))
@@ -25,9 +26,10 @@
         (slots2 (.-slots st2))
         (s3-cleared (get slots2 2))
         (s2-receipt (get slots2 1))]
-    (and (> (.-tokens s3-loaded) 0)
-         (and (== (.-tokens s3-cleared) 0)
-              (> (len (.-payload s2-receipt)) 0)))))
+    (assert (> (.-tokens s3-loaded) 0) "loaded tokens > 0")
+    (assert (= (.-tokens s3-cleared) 0) "cleared tokens == 0")
+    (assert (> (string-length (.-payload s2-receipt)) 0) "receipt payload non-empty")
+    true))
 
 (df test-vmm-compact-preserves-invariants [] -> Bool
   (let [(st0 (vmm/make-vmm-state "Root rules" 4096))
@@ -36,16 +38,20 @@
         (slots (.-slots st2))
         (s1 (get slots 0))
         (s3 (get slots 2))]
-    (and (== (.-payload s1) "Root rules")
-         (== (.-tokens s3) 0))))
+    (assert (= (.-payload s1) "Root rules") "slot 1 payload preserved")
+    (assert (= (.-tokens s3) 0) "slot 3 tokens cleared after compact")
+    true))
 
 (df test-vmm-prompt-rendering [] -> Bool
   (let [(st (vmm/make-vmm-state "No foreign code" 4096))
         (prompt (vmm/vmm-render-prompt st))]
-    (>= (len prompt) 50)))
+    (assert (>= (string-length prompt) 50) "rendered prompt length >= 50")
+    true))
 
 (df run-tests [] -> Bool
-  (and (and (test-vmm-initialization)
-            (test-vmm-knowledge-lifecycle))
-       (and (test-vmm-compact-preserves-invariants)
-            (test-vmm-prompt-rendering))))
+  (do
+    (test-vmm-initialization)
+    (test-vmm-knowledge-lifecycle)
+    (test-vmm-compact-preserves-invariants)
+    (test-vmm-prompt-rendering)
+    true))

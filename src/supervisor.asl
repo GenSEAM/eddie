@@ -53,14 +53,14 @@
     :is-deadlock true
     :status (proc-deadlock)))
 
-(df execute-supervised [(cmd Str) (simulated-idle-ms I64) (cfg SupervisorConfig)] -> ProcessReceipt
+(df execute-supervised [(cmd Str) (idle-ms I64) (cfg SupervisorConfig)] -> ProcessReceipt
   :d "Executes command with sliding idle watchdog and deadlock interception."
   (let [(idle-thresh (.-sliding-idle-ms cfg))]
-    (if (> simulated-idle-ms idle-thresh)
-      (trap-interactive-deadlock (str "Command stalled on stdin: " cmd) simulated-idle-ms)
+    (if (> idle-ms idle-thresh)
+      (trap-interactive-deadlock (str "Command stalled on stdin: " cmd) idle-ms)
       (ProcessReceipt
         :exit-code 0
-        :elapsed-ms simulated-idle-ms
+        :elapsed-ms idle-ms
         :last-output (str "Command completed successfully: " cmd)
         :is-deadlock false
         :status (proc-completed)))))

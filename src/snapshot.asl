@@ -59,8 +59,8 @@
   :d "Serializes a snapshot graph into deterministic, sorted line-oriented S-expressions."
   (let [(ents (.-entities graph))]
     (cond
-      ((== (len ents) 0) ";; .eddie/snapshot.asn (empty)")
-      ((== (len ents) 1) (format-entity (get ents 0)))
+      ((= (list-length ents) 0) ";; .eddie/snapshot.asn (empty)")
+      ((= (list-length ents) 1) (format-entity (get ents 0)))
       (true
        (let [(e0 (format-entity (get ents 0)))
              (e1 (format-entity (get ents 1)))]
@@ -68,19 +68,49 @@
            (str e0 "\n" e1)
            (str e1 "\n" e0)))))))
 
+(df extract-quoted-field [(line Str) (tag Str)] -> Str
+  (let [(idx (string-index-of line tag))]
+    (if (option-some? idx)
+      (let [(after (option-or (string-slice line (+ (option-unwrap idx) (string-length tag)) (string-length line)) ""))
+            (q-idx (string-index-of after "\""))]
+        (if (option-some? q-idx)
+          (option-or (string-slice after 0 (option-unwrap q-idx)) "")
+          ""))
+      "")))
+
+(df extract-kind-field [(line Str)] -> SnapshotKind
+  (let [(idx (string-index-of line ":kind :"))]
+    (if (option-some? idx)
+      (let [(after (option-or (string-slice line (+ (option-unwrap idx) 7) (string-length line)) ""))
+            (sp-idx (string-index-of after " "))]
+        (let [(k-str (if (option-some? sp-idx) (option-or (string-slice after 0 (option-unwrap sp-idx)) after) after))]
+          (parse-kind k-str)))
+      (kind-req))))
+
+(df parse-entity-line [(line Str)] -> (Option SnapshotEntity)
+  (let [(trimmed (string-trim line))]
+    (if (string-starts-with? trimmed "(:entity")
+      (let [(id (extract-quoted-field trimmed ":id \""))
+            (kind (extract-kind-field trimmed))
+            (payload (extract-quoted-field trimmed ":payload \""))
+            (anchor (extract-quoted-field trimmed ":anchor \""))]
+        (some (SnapshotEntity :id id :kind kind :payload payload :anchor anchor)))
+      (none))))
+
 (df deserialize-graph [(content Str)] -> SnapshotGraph
   :d "Parses serialized snapshot content into a structured SnapshotGraph."
-  (if (== (len content) 0)
-    (SnapshotGraph :entities (list) :version "v1.0")
-    (let [(mock-entity (SnapshotEntity
-                         :id "req:001"
-                         :kind (kind-req)
-                         :payload "Deterministic execution"
-                         :anchor "src/main.asl:1"))]
-      (SnapshotGraph
-        :entities (list mock-entity)
-        :version "v1.0"))))
+  (let [(trimmed (string-trim content))]
+    (if (= (string-length trimmed) 0)
+      (SnapshotGraph :entities (list) :version "v1.0")
+      (let [(lines (string-split trimmed "\n"))
+            (ents (fold (fn [(acc (List SnapshotEntity)) (line Str)] -> (List SnapshotEntity)
+                          (mt (parse-entity-line line)
+                            ((some e) (list-append acc (list e)))
+                            ((none) acc)))
+                        (list)
+                        lines))]
+        (SnapshotGraph :entities ents :version "v1.0")))))
 
 (df diff-graphs [(old-graph SnapshotGraph) (new-graph SnapshotGraph)] -> I64
   :d "Computes number of entity additions between two snapshot graphs."
-  (- (len (.-entities new-graph)) (len (.-entities old-graph))))
+  (- (list-length (.-entities new-graph)) (list-length (.-entities old-graph))))

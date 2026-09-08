@@ -11,14 +11,11 @@
 
 (df test-agent-autonomy-levels [] -> Bool
   (let [(m (pol/make-manifest "/workspace" (list) "/tmp" false))
-        ;; L0 Ask
         (s0 (ag/make-autonomy-session "inspect" m (pol/level-ask)))
         (r0 (ag/step-agent s0 "write" "/workspace/src/test.asl" "dummy"))
-        ;; L1 Guarded
         (s1 (ag/make-autonomy-session "inspect" m (pol/level-guarded)))
         (r1-read (ag/step-agent s1 "read" "/workspace/src/test.asl" ""))
         (r1-write (ag/step-agent (.-session r1-read) "write" "/workspace/src/test.asl" "dummy"))
-        ;; L2 FullAuto
         (s2 (ag/make-autonomy-session "inspect" m (pol/level-auto)))
         (r2-write (ag/step-agent s2 "write" "/workspace/src/test.asl" "dummy"))]
     (and (string-starts-with? (.-action-taken r0) "prompt:write")

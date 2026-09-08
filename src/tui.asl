@@ -58,7 +58,7 @@
 
 (df format-agent-badge [(role Str) (alias Str) (model Str)] -> Str
   :d "Renders rich agent role and model routing indicator badge."
-  (str "  👤 [Agent: " role "] routed to alias @" alias " (" model ")"))
+  (str "  [Agent: " role "] routed to alias @" alias " (" model ")"))
 
 (dfs MeshNodeStats
   (:f alias Str "Agent mesh alias e.g. @scout")
@@ -68,23 +68,23 @@
 
 (df format-mesh-telemetry [(scout-tok I64) (coder-tok I64) (reviewer-tok I64) (latency-ms I64)] -> Str
   :d "Renders live telemetry block for multi-agent mesh orchestration."
-  (str "  📡 [Mesh Telemetry] @scout: " (string-from-int64 scout-tok) " tok"
+  (str "  [Mesh Telemetry] @scout: " (string-from-int64 scout-tok) " tok"
        " | @coder: " (string-from-int64 coder-tok) " tok"
        " | @reviewer: " (string-from-int64 reviewer-tok) " tok"
        " | Latency: " (string-from-int64 latency-ms) "ms"))
 
 (df format-thinking-block [(think Str)] -> Str
   :d "Formats quarantined reasoning/thinking channel with clean indentation."
-  (str "  🧠 [Quarantined Reasoning Channel]\n     | " (string-trim think)))
+  (str "  [Quarantined Reasoning Channel]\n     | " (string-trim think)))
 
 (df format-reflection-channel [(thought Str)] -> Str
   :d "Formats quarantined 7-stage epistemic reflection channel with clean indentation."
-  (str "  🧠 [Quarantined Reflection Channel]: " (string-trim thought)))
+  (str "  [Quarantined Reflection Channel]: " (string-trim thought)))
 
 (df format-context-bar [(current I64) (limit I64)] -> Str
   :d "Formats context window memory utilization bar."
   (let [(pct (if (> limit 0) (/ (* current 100) limit) 0))]
-    (str "  📊 [Context: " (string-from-int64 current) " / "
+    (str "  [Context: " (string-from-int64 current) " / "
          (string-from-int64 limit) " tok (" (string-from-int64 pct) "%)]")))
 
 (df format-diff-preview [(path Str) (added I64) (removed I64)] -> Str

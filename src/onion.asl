@@ -87,10 +87,10 @@
 (df run-sanitizer [(text Str)] -> Str
   :d "Compresses diagnostic traces and long outputs to bound tokens (<300 tokens / 1200 chars)."
   (let [(max-chars 1200)
-        (l (len text))]
+        (l (string-length text))]
     (if (<= l max-chars)
       text
-      (str (slice text 0 max-chars) "\n... [truncated to 300 tokens by mw-sanitizer]"))))
+      (str (option-or (string-slice text 0 max-chars) "") "\n... [truncated to 300 tokens by mw-sanitizer]"))))
 
 (df execute-pipeline [(pipe OnionPipeline)] -> MiddlewareContext
   :d "Executes all registered middleware layers against active context."

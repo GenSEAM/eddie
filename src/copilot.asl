@@ -35,7 +35,10 @@
 
 (df dereference-pointer [(ptr PointerRef) (query Str)] -> Str
   :d "Resolves a perceptual pointer returning a verified scalar fact or slice."
-  (str "(:fact :ptr \"" (.-id ptr) "\" :query \"" query "\" :val \"ok\")"))
+  (let [(summary (.-summary ptr))
+        (has-match (string-contains? (string-lower summary) (string-lower query)))
+        (res-val (if has-match "matched" "resolved"))]
+    (str "(:fact :ptr \"" (.-id ptr) "\" :query \"" query "\" :val \"" res-val "\" :summary \"" summary "\")")))
 
 (df make-proposal [(branch Str) (target Str) (payload Str)] -> StagedProposal
   :d "Constructs a staged proposal record."
@@ -67,5 +70,5 @@
 
 (df trace-verify [(symbol Str)] -> Bool
   :d "Validates that a symbol has valid linkages to requirements, usecases, and invariants."
-  (let [(l (len symbol))]
+  (let [(l (string-length symbol))]
     (> l 0)))

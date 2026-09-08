@@ -87,6 +87,6 @@
 (df format-health-summary [(matrix HealthMatrix)] -> Str
   :d "Formats an architectural health matrix into a concise TUI summary."
   (let [(status (if (.-is-healthy matrix) "HEALTHY" "DEGRADED"))
-        (c-count (len (.-cycles matrix)))
-        (h-count (len (.-hotspots matrix)))]
+        (c-count (list-length (.-cycles matrix)))
+        (h-count (list-length (.-hotspots matrix)))]
     (str "Health: " status " | Cycles: " (str c-count) " | Hotspots: " (str h-count))))
