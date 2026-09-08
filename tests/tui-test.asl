@@ -1,5 +1,5 @@
 (module asl-agent/tui-test
-  :d "Unit tests for Eddie TUI terminal presentation and tool formatting."
+  :d "Unit tests for Addie TUI terminal presentation and tool formatting."
   :x [test-tui-header-rendering
       test-orchestration-window-header
       test-tui-orchestration-window
@@ -18,7 +18,7 @@
 (df test-tui-header-rendering [] -> Bool
   (let [(h (tui/make-tui-header "gemma-4-31b-it" (pol/level-guarded)))
         (rendered (tui/format-tui-header h))]
-    (and (string-contains? rendered "Eddie TUI")
+    (and (string-contains? rendered "Addie TUI")
          (and (string-contains? rendered "gemma-4-31b-it")
               (string-contains? rendered "L1:Guarded")))))
 
@@ -99,7 +99,7 @@
         (r-str (tui/format-reflection-channel "Epistemic anchor active"))
         (t-str (tui/format-tool-call "read" "gsa/src/tui.asl" "completed"))
         (c-str (tui/format-context-and-diff-bar 4096 131072 "gsa/src/tui.asl" 15 2))]
-    (and (string-contains? h-str "Eddie TUI: Orchestration Window")
+    (and (string-contains? h-str "Addie TUI: Orchestration Window")
          (and (string-contains? h-str "Autonomy: ")
               (and (string-contains? r-str "🧠 [Quarantined Reflection Channel]:")
                    (and (string-contains? t-str "▶ [read]")

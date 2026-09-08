@@ -50,7 +50,7 @@
   :d "Renders compact 1-line terminal status header with active model and pipeline mode."
   (let [(total-tokens (+ (.-prompt-tokens header) (.-completion-tokens header)))
         (lvl-str (pol/autonomy-level-to-string (.-autonomy header)))]
-    (str "┌── [Eddie TUI: Orchestration Window] Model: " (.-model-name header)
+    (str "┌── [Addie TUI: Orchestration Window] Model: " (.-model-name header)
          " | Mode: " (.-pipeline-mode header)
          " | Autonomy: " lvl-str
          " | Tokens: " (string-from-int64 total-tokens)

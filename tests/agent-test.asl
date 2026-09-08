@@ -41,12 +41,26 @@
 
 (df test-eddie-run-direct [] -> Bool
   (let [(out (eddie/eddie-run "Audit dependencies in /workspace/src/main.asl" "/workspace" (pol/level-auto)))]
-    (and (string-contains? out "Eddie TUI")
+    (and (string-contains? out "Addie TUI")
          (and (string-contains? out "Goal:")
               (string-contains? out "Session complete")))))
 
+(df test-addie-run-direct [] -> Bool
+  (let [(out (eddie/addie-run "Audit dependencies in /workspace/src/main.asl" "/workspace" (pol/level-auto)))]
+    (and (string-contains? out "Addie TUI")
+         (and (string-contains? out "Goal:")
+              (string-contains? out "Session complete")))))
+
+(df test-addie-version [] -> Bool
+  (and (= (eddie/addie-version) "0.1.0")
+       (= (eddie/eddie-version) "0.1.0")))
+
 (df run-tests [] -> Bool
-  (and (and (test-agent-autonomy-levels)
-            (test-agent-tui-folding-history))
-       (and (test-eddie-run-clarification)
-            (test-eddie-run-direct))))
+  (do
+    (assert (test-agent-autonomy-levels))
+    (assert (test-agent-tui-folding-history))
+    (assert (test-eddie-run-clarification))
+    (assert (test-eddie-run-direct))
+    (assert (test-addie-run-direct))
+    (assert (test-addie-version))
+    true))

@@ -32,7 +32,7 @@
         (folding1 (tui/format-tool-call "read" "src/snake.asl" "ok (60 lines)"))
         (folding2 (tui/format-tool-call "test" "tests/snake-test.asl" "passing (5/5 assertions)"))
         (summary (tui/format-session-summary h 3))]
-    (and (string-contains? (tui/format-tui-header h) "Eddie TUI")
+    (and (string-contains? (tui/format-tui-header h) "Addie TUI")
          (and (string-contains? folding1 "▶ [read]")
               (and (string-contains? folding2 "▶ [test]")
                    (string-contains? summary "✔ Session complete"))))))

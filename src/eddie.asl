@@ -4,7 +4,8 @@
       fast-triage consult-and-refine plan-execution evaluate-circuit-breaker
       agent-run agent-version agent-banner
       gsa-run gsa-version gsa-banner
-      eddie-run eddie-version eddie-banner]
+      eddie-run eddie-version eddie-banner
+      addie-run addie-version addie-banner]
   :i [(core/strings :a s) (policy :a pol) (agent :a ag) (feedback :a fb) (tui :a tui)])
 
 (dfe TriageVerdict
@@ -58,10 +59,10 @@
 (df consult-and-refine [(prompt String) (ambiguous Bool)] -> OrchestrationPlan
   :d "Layer 2: Consultative refinement"
   (if ambiguous
-    (OrchestrationPlan :task-id "eddie-consult" :intent (chat-rag) :tier (tier-0) :triage (consult)
+    (OrchestrationPlan :task-id "addie-consult" :intent (chat-rag) :tier (tier-0) :triage (consult)
                        :assigned-agents (list "agent-consultant") :follow-up-needed true
                        :speculative-branches 1 :circuit-breaker-limit 1)
-    (OrchestrationPlan :task-id "eddie-task" :intent (code-gen) :tier (tier-2) :triage (swarm)
+    (OrchestrationPlan :task-id "addie-task" :intent (code-gen) :tier (tier-2) :triage (swarm)
                        :assigned-agents (list "agent-planner" "agent-coder" "agent-reviewer") :follow-up-needed false
                        :speculative-branches 2 :circuit-breaker-limit 2)))
 
@@ -82,9 +83,13 @@
 (df gsa-version [] -> Str
   (agent-version))
 
+(df addie-version [] -> Str
+  :d "Returns current Addie version string."
+  "0.1.0")
+
 (df eddie-version [] -> Str
   :d "Returns current Eddie version string."
-  "0.1.0")
+  (addie-version))
 
 (df agent-banner [] -> Str
   :d "Renders compact GSA terminal banner."
@@ -93,18 +98,15 @@
 (df gsa-banner [] -> Str
   (agent-banner))
 
-(df eddie-banner [] -> Str
+(df addie-banner [] -> Str
   :d "Renders compact terminal banner."
   "=== GSA (GenSEAM Agent) - Pure ASL Autonomous Coding Agent ===")
 
-(df agent-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
-  :d "Executes interactive terminal session on prompt with capability sandbox."
-  (eddie-run prompt workspace-root autonomy))
+(df eddie-banner [] -> Str
+  :d "Renders compact terminal banner."
+  (addie-banner))
 
-(df gsa-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
-  (eddie-run prompt workspace-root autonomy))
-
-(df eddie-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+(df addie-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
   :d "Executes interactive terminal session on prompt with capability sandbox."
   (let [(manifest (pol/make-manifest workspace-root (list) "/tmp" false))
         (req (fb/refine-user-prompt prompt (list workspace-root)))]
@@ -121,4 +123,15 @@
         (str (tui/format-tui-header h) "\n"
              (fb/format-concise-directive req) "\n"
              summary)))))
+
+(df eddie-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  :d "Executes interactive terminal session on prompt with capability sandbox."
+  (addie-run prompt workspace-root autonomy))
+
+(df agent-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  :d "Executes interactive terminal session on prompt with capability sandbox."
+  (addie-run prompt workspace-root autonomy))
+
+(df gsa-run [(prompt Str) (workspace-root Str) (autonomy pol/AutonomyLevel)] -> Str
+  (addie-run prompt workspace-root autonomy))
 

@@ -34,6 +34,9 @@
     (:sym :name "eddie-run" :kind :fn :tokens 2)
     (:sym :name "eddie-version" :kind :fn :tokens 2)
     (:sym :name "eddie-banner" :kind :fn :tokens 2)
+    (:sym :name "addie-run" :kind :fn :tokens 2)
+    (:sym :name "addie-version" :kind :fn :tokens 2)
+    (:sym :name "addie-banner" :kind :fn :tokens 2)
 
     ;; Feedback
     (:sym :name "ClarificationOption" :kind :type :tokens 1)
