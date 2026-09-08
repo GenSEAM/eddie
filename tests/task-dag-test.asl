@@ -4,6 +4,9 @@
       test-dag-topological-advancement
       test-dag-deadlock-detection
       test-dag-completion
+      test-dag-status-strings
+      test-dag-boxart-rendering
+      test-dag-vdom-rendering
       run-tests]
   :i [(task_dag :a dag)])
 
@@ -48,9 +51,44 @@
     (assert (not (dag/is-dag-complete? d)) "partial dag is not complete")
     true))
 
+(df test-dag-status-strings [] -> Bool
+  :d "Verifies node status conversion to canonical strings."
+  (let [(s1 (dag/node-status-to-string (dag/node-pending)))
+        (s2 (dag/node-status-to-string (dag/node-completed)))]
+    (assert (= s1 "pending") "c-dag-status-001: pending matches")
+    (assert (= s2 "completed") "c-dag-status-002: completed matches")
+    (assert (not (= s1 s2)) "c-dag-status-neg-001: states distinct")
+    true))
+
+(df test-dag-boxart-rendering [] -> Bool
+  :d "Verifies TaskDAG Unicode box-art rendering."
+  (let [(t1 (dag/make-task-node "t1" "Root task" "triage" (list)))
+        (t2 (dag/make-task-node "t2" "Child task" "coding" (list "t1")))
+        (d (dag/make-task-dag "dag-render" (list t1 t2)))
+        (art (dag/render-task-dag-boxart d))]
+    (assert (string-contains? art "t1 : Root task") "c-dag-box-001: contains t1")
+    (assert (string-contains? art "t2 : Child task") "c-dag-box-002: contains t2")
+    (assert (string-contains? art "▼") "c-dag-box-003: contains directed arrow")
+    (assert (not (string-empty? art)) "c-dag-box-neg-001: art not empty")
+    true))
+
+(df test-dag-vdom-rendering [] -> Bool
+  :d "Verifies TaskDAG declarative VDOM ASN S-expression rendering."
+  (let [(t1 (dag/make-task-node "t1" "Root task" "triage" (list)))
+        (d (dag/make-task-dag "dag-vdom" (list t1)))
+        (vdom (dag/render-task-dag-vdom-asn d))]
+    (assert (string-contains? vdom "(:div :class \"task-dag\"") "c-dag-vdom-001: root div class")
+    (assert (string-contains? vdom ":data-dag-id \"dag-vdom\"") "c-dag-vdom-002: data-dag-id present")
+    (assert (string-contains? vdom "(:span :class \"node-title\" \"Root task\")") "c-dag-vdom-003: node title present")
+    (assert (not (string-contains? vdom ":data-complete true")) "c-dag-vdom-neg-001: incomplete dag")
+    true))
+
 (df run-tests [] -> Bool
   :d "Executes all task DAG test functions."
   (and (test-dag-creation-and-ready-queue)
        (and (test-dag-topological-advancement)
             (and (test-dag-deadlock-detection)
-                 (test-dag-completion)))))
+                 (and (test-dag-completion)
+                      (and (test-dag-status-strings)
+                           (and (test-dag-boxart-rendering)
+                                (test-dag-vdom-rendering))))))))

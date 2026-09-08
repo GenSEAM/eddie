@@ -362,6 +362,9 @@
     (:sym :name "is-dag-complete?" :kind :fn :tokens 3 :rationale "dag completion predicate")
     (:sym :name "has-dag-deadlock?" :kind :fn :tokens 3 :rationale "dag deadlock cycle detector")
     (:sym :name "format-dag-summary" :kind :fn :tokens 3 :rationale "dag progress summary formatter")
+    (:sym :name "node-status-to-string" :kind :fn :tokens 4 :rationale "task node status string converter")
+    (:sym :name "render-task-dag-boxart" :kind :fn :tokens 4 :rationale "renders task dag to terminal boxart")
+    (:sym :name "render-task-dag-vdom-asn" :kind :fn :tokens 5 :rationale "renders task dag to declarative vdom asn tree")
 
     ;; Phase 339 Model Selection Matrix Symbols (asl-agent/model-router)
     (:sym :name "TaskRole" :kind :type :tokens 1)

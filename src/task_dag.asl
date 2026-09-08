@@ -1,11 +1,12 @@
 (module asl-agent/task-dag
-  :d "Task Directed Acyclic Graph (DAG) orchestrator with topological dependency resolution, deadlock trapping, and model role routing."
+  :d "Task Directed Acyclic Graph (DAG) orchestrator with topological dependency resolution, deadlock trapping, model role routing, and TUI/VDOM rendering."
   :x [TaskNodeStatus TaskNode TaskDAG
       node-pending node-ready node-in-progress node-completed node-failed node-blocked
       make-task-node make-task-dag find-node
       is-node-completed? are-deps-satisfied? get-completed-node-ids get-ready-nodes
-      mark-node-status mark-node-completed is-dag-complete? has-dag-deadlock? format-dag-summary]
-  :i [])
+      mark-node-status mark-node-completed is-dag-complete? has-dag-deadlock? format-dag-summary
+      node-status-to-string render-task-dag-boxart render-task-dag-vdom-asn]
+  :i [(asn_boxart :a box)])
 
 (dfe TaskNodeStatus
   (:c node-pending [] "Awaiting dependency completion")
@@ -177,3 +178,61 @@
         (done (list-length (get-completed-node-ids dag)))
         (ready (list-length (get-ready-nodes dag)))]
     (str "DAG [" (.-id dag) "]: " (string-from-int64 done) "/" (string-from-int64 total) " completed, " (string-from-int64 ready) " ready")))
+
+(df node-status-to-string [(status TaskNodeStatus)] -> Str
+  :d "Converts TaskNodeStatus into standard lowercase status string."
+  (mt status
+    ((node-pending) "pending")
+    ((node-ready) "ready")
+    ((node-in-progress) "in-progress")
+    ((node-completed) "completed")
+    ((node-failed) "failed")
+    ((node-blocked) "blocked")))
+
+(df render-task-dag-boxart [(dag TaskDAG)] -> Str
+  :d "Renders a TaskDAG into a connected terminal Unicode box-art string."
+  (let [(box-nodes (reverse (fold (fn [(acc (List box/BoxNode)) (n TaskNode)] -> (List box/BoxNode)
+                                    (let [(st (mt (.-status n)
+                                                ((node-completed) "done")
+                                                ((node-in-progress) "running")
+                                                ((node-failed) "failed")
+                                                ((node-blocked) "blocked")
+                                                ((node-ready) "ready")
+                                                ((node-pending) "queued")))]
+                                      (list-cons (box/BoxNode :id (.-id n) :title (.-title n) :state st) acc)))
+                                  (list)
+                                  (.-nodes dag))))
+        (box-edges (reverse (fold (fn [(acc (List box/BoxEdge)) (n TaskNode)] -> (List box/BoxEdge)
+                                    (fold (fn [(e-acc (List box/BoxEdge)) (dep-id Str)] -> (List box/BoxEdge)
+                                            (list-cons (box/BoxEdge :from dep-id :to (.-id n) :label (none)) e-acc))
+                                          acc
+                                          (.-deps n)))
+                                  (list)
+                                  (.-nodes dag))))]
+    (box/render-dag-boxart box-nodes box-edges)))
+
+(df render-task-dag-vdom-asn [(dag TaskDAG)] -> Str
+  :d "Renders a TaskDAG into a declarative VDOM ASN S-expression tree."
+  (let [(node-vdoms (fold (fn [(acc Str) (n TaskNode)] -> Str
+                            (let [(st-str (node-status-to-string (.-status n)))
+                                  (deps-str (string-trim (fold (fn [(s Str) (d Str)] -> Str (str s "\"" d "\" ")) "" (.-deps n))))
+                                  (receipt-part (if (string-empty? (.-receipt n))
+                                                  ""
+                                                  (str " (:span :class \"node-receipt\" \"" (.-receipt n) "\")")))]
+                              (str acc
+                                   "    (:div :class \"dag-node\" :data-id \"" (.-id n)
+                                   "\" :data-status \"" st-str
+                                   "\" :data-role \"" (.-role n) "\"\n"
+                                   "      (:span :class \"node-title\" \"" (.-title n) "\")\n"
+                                   "      (:span :class \"node-deps\" [" deps-str "])"
+                                   receipt-part
+                                   ")\n")))
+                          ""
+                          (.-nodes dag)))]
+    (str "(:div :class \"task-dag\" :data-dag-id \"" (.-id dag)
+         "\" :data-iteration " (string-from-int64 (.-iteration dag))
+         " :data-complete " (if (is-dag-complete? dag) "true" "false")
+         " :data-deadlocked " (if (has-dag-deadlock? dag) "true" "false") "\n"
+         "  (:div :class \"dag-nodes\"\n"
+         node-vdoms
+         "  ))")))
