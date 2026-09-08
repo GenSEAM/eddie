@@ -19,5 +19,11 @@
     (:case :id "c-rev-neg-001" :polarity :negative :desc "Review breaker trips and escalates to human on 2nd consecutive rejection" :input "(:rejections 2)" :expect :err-review-escalated)
     (:case :id "c-mode-pos-001" :polarity :positive :desc "Simple mode runs direct tool execution bypass" :input "(:mode :simple)" :expect :ok)
     (:case :id "c-mode-pos-002" :polarity :positive :desc "Maintainer mode initializes full DAG and review envelope" :input "(:mode :maintainer)" :expect :ok)
+    (:case :id "c-corr-pos-001" :polarity :positive :desc "Freedom corridor populates default invariants and explorations" :input "(:corridor \"corr-01\")" :expect :ok)
+    (:case :id "c-corr-neg-001" :polarity :negative :desc "Freedom corridor rejects gate weakening and comment violations" :input "(:action \"weaken gate\")" :expect :err-corridor-violation)
+    (:case :id "c-fb-pos-001" :polarity :positive :desc "Intent contract transitions to grounded state" :input "(:stage :grounded)" :expect :ok)
+    (:case :id "c-fb-pos-002" :polarity :positive :desc "Explain-Once memory grounding serializes contract and corridor to persistent ASN" :input "(:ground true)" :expect :ok)
+    (:case :id "c-fb-pos-003" :polarity :positive :desc "Intent contract decomposes into 4-stage Swarm DAG" :input "(:decompose true)" :expect :ok)
+    (:case :id "c-fb-neg-001" :polarity :negative :desc "Decomposed Swarm DAG possesses valid unblocked dependency structure with zero deadlocks" :input "(:deadlock-check true)" :expect :ok)
   ]
 )

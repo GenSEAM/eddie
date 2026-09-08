@@ -13,8 +13,8 @@
         (t2 (dag/make-task-node "t2" "Child task" "coding" (list "t1")))
         (d (dag/make-task-dag "dag-1" (list t1 t2)))
         (ready (dag/get-ready-nodes d))]
-    (assert-case "c-dag-pos-001" (= (list-length ready) 1))
-    (refute-case "c-dag-pos-001" (list-empty? ready))
+    (assert (= (list-length ready) 1) "c-dag-pos-001: ready has 1 root node")
+    (assert (not (list-empty? ready)) "c-dag-pos-001: ready queue not empty")
     true))
 
 (df test-dag-topological-advancement [] -> Bool
@@ -24,8 +24,8 @@
         (d (dag/make-task-dag "dag-1" (list t1 t2)))
         (d2 (dag/mark-node-completed d "t1" "receipt: ok"))
         (ready (dag/get-ready-nodes d2))]
-    (assert-case "c-dag-pos-002" (= (list-length ready) 1))
-    (refute-case "c-dag-pos-002" (= (list-length (dag/get-completed-node-ids d2)) 0))
+    (assert (= (list-length ready) 1) "c-dag-pos-002: child task unblocked")
+    (assert (not (= (list-length (dag/get-completed-node-ids d2)) 0)) "c-dag-pos-002: completed nodes present")
     true))
 
 (df test-dag-deadlock-detection [] -> Bool
@@ -35,8 +35,8 @@
         (cyclic-dag (dag/make-task-dag "dag-cyclic" (list t1 t2)))
         (clean-root (dag/make-task-node "root" "Clean root" "triage" (list)))
         (clean-dag (dag/make-task-dag "dag-clean" (list clean-root)))]
-    (assert-case "c-dag-neg-001" (dag/has-dag-deadlock? cyclic-dag))
-    (refute-case "c-dag-neg-001" (dag/has-dag-deadlock? clean-dag))
+    (assert (dag/has-dag-deadlock? cyclic-dag) "c-dag-neg-001: cyclic dag deadlocked")
+    (assert (not (dag/has-dag-deadlock? clean-dag)) "c-dag-neg-001: clean dag not deadlocked")
     true))
 
 (df test-dag-completion [] -> Bool
@@ -44,8 +44,8 @@
   (let [(t1 (dag/make-task-node "t1" "Single task" "triage" (list)))
         (d (dag/make-task-dag "dag-done" (list t1)))
         (d-done (dag/mark-node-completed d "t1" "receipt: ok"))]
-    (assert (dag/is-dag-complete? d-done))
-    (refute (dag/is-dag-complete? d))
+    (assert (dag/is-dag-complete? d-done) "dag is complete")
+    (assert (not (dag/is-dag-complete? d)) "partial dag is not complete")
     true))
 
 (df run-tests [] -> Bool

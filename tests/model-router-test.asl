@@ -12,18 +12,18 @@
         (ep-design (router/resolve-model-for-role (router/role-design) m false))
         (ep-coding (router/resolve-model-for-role (router/role-coding) m false))
         (ep-review (router/resolve-model-for-role (router/role-review) m false))]
-    (assert-case "c-router-pos-001" (= (.-model-id ep-design) "gemini-2.5-flash"))
-    (assert-case "c-router-pos-001" (= (.-model-id ep-coding) "gemma-4-31b-it"))
-    (assert-case "c-router-pos-001" (= (.-model-id ep-review) "gemini-2.5-pro"))
-    (refute-case "c-router-pos-001" (= (.-model-id ep-review) "unknown"))
+    (assert (= (.-model-id ep-design) "gemini-2.5-flash") "c-router-pos-001: design model is flash")
+    (assert (= (.-model-id ep-coding) "gemma-4-31b-it") "c-router-pos-001: coding model is gemma")
+    (assert (= (.-model-id ep-review) "gemini-2.5-pro") "c-router-pos-001: review model is pro")
+    (assert (not (= (.-model-id ep-review) "unknown")) "c-router-pos-001: review model not unknown")
     true))
 
 (df test-model-offline-fallback [] -> Bool
   :d "Verifies offline flag forces immediate fallback to verified local SLM endpoint."
   (let [(m (router/default-routing-matrix))
         (ep-offline (router/resolve-model-for-role (router/role-review) m true))]
-    (assert-case "c-router-neg-001" (.-is-local ep-offline))
-    (refute-case "c-router-neg-001" (= (.-model-id ep-offline) "gemini-2.5-pro"))
+    (assert (.-is-local ep-offline) "c-router-neg-001: offline endpoint is local")
+    (assert (not (= (.-model-id ep-offline) "gemini-2.5-pro")) "c-router-neg-001: offline not cloud pro")
     true))
 
 (df test-format-route-decision [] -> Bool
@@ -31,8 +31,8 @@
   (let [(m (router/default-routing-matrix))
         (ep-review (router/resolve-model-for-role (router/role-review) m false))
         (report (router/format-route-decision (router/role-review) ep-review))]
-    (assert (string-contains? report "Role [review]"))
-    (refute (= report ""))
+    (assert (string-contains? report "Role [review]") "route decision contains role")
+    (assert (not (= report "")) "route decision not empty")
     true))
 
 (df run-tests [] -> Bool
