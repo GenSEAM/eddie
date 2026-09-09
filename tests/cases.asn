@@ -1,6 +1,6 @@
 ;; Agent Sovereign Declarative Test Case Store (ASN)
 (:case-registry
-  :package "@genseam/asl-agent"
+  :package "asl-agent"
   :feature "sovereign-maintainer-swarm-orchestrator"
   :cases [
     (:case :id "c-agent-pos-001" :polarity :positive :desc "make-agent-session initializes in idle phase with max-steps 10" :input "(:goal \"optimize wasm\")" :expect :ok)

@@ -1,4 +1,4 @@
-(:package @genseam/asl-agent
+(:package asl-agent
  :version "0.1.0"
  :entry "src/agent.asl"
  :description "Agent: Autonomous Coding Agent, Adaptive Swarm Orchestrator & Terminal TUI in ASL"

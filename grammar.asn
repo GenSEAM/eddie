@@ -1,7 +1,7 @@
 ;; Package Grammar & Exported Symbol Registry (ASN)
-;; @genseam/asl-agent (GSA: GenSEAM Agent)
+;; asl-agent (GSA: GenSEAM Agent)
 (:grammar
-  :package @genseam/asl-agent
+  :package asl-agent
   :version "0.1.0"
   :tokens-baseline 2
   :symbols [
