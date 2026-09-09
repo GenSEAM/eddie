@@ -41,6 +41,7 @@
                          "Extra log information repeating over multiple lines to test the sanitizer boundary condition.\n"))
         (sanitized (on/run-sanitizer long-trace))]
     (assert (<= (string-length sanitized) 1300) "sanitizer length <= 1300")
+    (assert (> (string-length sanitized) 0) "sanitizer length > 0")
     true))
 
 (df run-tests [] -> Bool

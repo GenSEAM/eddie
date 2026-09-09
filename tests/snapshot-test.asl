@@ -21,6 +21,7 @@
         (g (snap/make-graph (list e1 e2) "v1.0"))
         (s (snap/serialize-graph g))]
     (assert (>= (string-length s) 40) "serialized graph length >= 40")
+    (assert (string-contains? s "req:002") "serialized graph contains req:002")
     true))
 
 (df test-snapshot-diffing [] -> Bool
@@ -30,6 +31,7 @@
         (g2 (snap/make-graph (list e1 e2) "v1.0"))
         (d (snap/diff-graphs g1 g2))]
     (assert (= d 1) "diff count is 1")
+    (assert (not (= d 0)) "diff count is not 0")
     true))
 
 (df test-snapshot-deserialization [] -> Bool

@@ -46,6 +46,7 @@
   (let [(st (vmm/make-vmm-state "No foreign code" 4096))
         (prompt (vmm/vmm-render-prompt st))]
     (assert (>= (string-length prompt) 50) "rendered prompt length >= 50")
+    (assert (string-contains? prompt "No foreign code") "rendered prompt contains base rules")
     true))
 
 (df run-tests [] -> Bool

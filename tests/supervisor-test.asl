@@ -19,6 +19,7 @@
 (df test-supervised-env-injection [] -> Bool
   (let [(env (sup/build-supervised-env true))]
     (assert (>= (string-length env) 20) "supervised env length >= 20")
+    (assert (not (string-contains? env "error")) "supervised env must not contain error")
     true))
 
 (df test-sliding-idle-watchdog-activity [] -> Bool

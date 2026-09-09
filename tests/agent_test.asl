@@ -25,6 +25,7 @@
         (sess (ag/make-agent-session "inspect repo" m))
         (res (ag/step-agent sess "fs:read" "/workspace/src/app.asl" "dummy payload"))]
     (assert (.-success res) "step-agent success")
+    (assert (not (nil? (.-observation res))) "step-agent observation not nil")
     true))
 
 (df run-tests [] -> Bool

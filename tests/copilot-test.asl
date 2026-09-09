@@ -11,6 +11,7 @@
   (let [(ptr (cop/make-pointer "b3-dom-01" (cop/ptr-dom) "Login form DOM tree" "sha256:abcd"))
         (fact (cop/dereference-pointer ptr "submit_button_visible"))]
     (assert (>= (string-length fact) 20) "fact length >= 20")
+    (assert (not (string-contains? fact "error")) "fact must not contain error")
     true))
 
 (df test-staging-lifecycle [] -> Bool

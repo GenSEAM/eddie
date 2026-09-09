@@ -22,6 +22,7 @@
   (let [(req (hor/make-horizon-request "agent/step" 2 1000))
         (res (hor/expand-horizon req))]
     (assert (<= (.-tokens-used res) 1000) "tokens used within budget")
+    (assert (> (.-tokens-used res) 0) "tokens used is positive")
     true))
 
 (df test-health-matrix-cycle-detection [] -> Bool
@@ -36,6 +37,7 @@
   (let [(m (hor/compute-health-matrix (list "a") false))
         (summary (hor/format-health-summary m))]
     (assert (>= (string-length summary) 15) "health summary length >= 15")
+    (assert (not (string-contains? summary "unhealthy")) "healthy summary does not contain unhealthy")
     true))
 
 (df run-tests [] -> Bool
