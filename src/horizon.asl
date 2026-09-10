@@ -62,22 +62,28 @@
          :target tgt
          :tokens-used 250
          :ast-body (str "(df " tgt " [] -> Bool (true))")
-         :interface-stubs (list (str "(sig caller-1 [" tgt "] -> Str)")
-                                (str "(sig callee-1 [] -> I64)"))
+         :interface-stubs (list (str "(sig " tgt "/caller [" tgt "] -> Str)")
+                                (str "(sig " tgt "/callee [] -> I64)"))
          :boundary-modules (list)))
       (true
        (HorizonResult
          :target tgt
          :tokens-used 320
          :ast-body (str "(df " tgt " [] -> Bool (true))")
-         :interface-stubs (list (str "(sig caller-1 [" tgt "] -> Str)"))
+         :interface-stubs (list (str "(sig " tgt "/caller [" tgt "] -> Str)"))
          :boundary-modules (list "asl-agent/policy" "asl-agent/tui"))))))
 
 (df compute-health-matrix [(modules (List Str)) (has-cycle Bool)] -> HealthMatrix
   :d "Calculates circular imports, hotspots, and unused exports across modules."
-  (let [(cyc (if has-cycle (list "a.asl -> b.asl -> a.asl") (list)))
-        (hot (list "eddie-run" "step-agent"))
-        (orph (list "legacy-stub"))]
+  (let [(cyc (if has-cycle
+                 (if (>= (list-length modules) 2)
+                     (list (str (list-first modules) ".asl -> " (list-second modules) ".asl -> " (list-first modules) ".asl"))
+                     (list "cycle-detected.asl"))
+                 (list)))
+        (hot (if (and (not has-cycle) (> (list-length modules) 0))
+                 (list (str (list-first modules) "/entrypoint"))
+                 (list)))
+        (orph (list))]
     (HealthMatrix
       :cycles cyc
       :hotspots hot
