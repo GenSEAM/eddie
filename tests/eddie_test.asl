@@ -40,8 +40,10 @@
 
 (df test-version-banner [] -> Bool
   (do
+    (assert (= (ed/addie-version) "0.1.0") "addie-version is 0.1.0")
     (assert (= (ed/eddie-version) "0.1.0") "eddie-version is 0.1.0")
-    (assert (string-contains? (ed/eddie-banner) "GSA (GenSEAM Agent)") "banner contains GSA")
+    (assert (string-contains? (ed/addie-banner) "GSA (GenSEAM Agent)") "addie banner contains GSA")
+    (assert (string-contains? (ed/eddie-banner) "GSA (GenSEAM Agent)") "eddie banner contains GSA")
     true))
 
 (df run-tests [] -> Bool
