@@ -6,7 +6,7 @@
       is-release-disposition?
       translate-prompt-to-asn
       render-asn-intent-sexp]
-  :i [(core/strings :a s)
+  :i [(asl-text/string :a s)
       (intent_cleaner :a ic)])
 
 (dfs AsnIntentFrame

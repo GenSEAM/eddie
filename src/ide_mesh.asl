@@ -30,7 +30,7 @@
       dispatch-task-to-mesh
       record-task-settlement
       render-mesh-status-asn]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfe IdeRuntime
   (:c ide-claude-code [] "Claude Code CLI headless runner")

@@ -5,7 +5,7 @@
       is-disruptive-to-user?
       resolve-optimal-ux
       make-intent-spec]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfe IntentKind
   (:c intent-fast-path [] "Instant local action: pause, mute, stop, cancel (<1ms)")

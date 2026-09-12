@@ -6,7 +6,7 @@
       evaluate-proactive-nudge
       hold-disruptive-intent
       release-held-intents-on-idle]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfs NudgeEvent
   (:f task-id Str "Associated task identifier")

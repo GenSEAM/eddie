@@ -121,7 +121,7 @@
   (mt (list-head worktrees)
     ((none) false)
     ((some root)
-     (if (string-starts-with? p root)
+     (if (or (= p root) (string-starts-with? p (str root "/")))
        true
        (is-in-worktrees? p (option-or (list-tail worktrees) (list)))))))
 
@@ -133,8 +133,8 @@
       (deny-strict "sandbox escape: sensitive system path rejected")
       (if (and (.-read-only manifest) (or (= action "write") (= action "patch")))
         (deny-strict "permission denied: manifest is read-only")
-        (let [(in-ws (string-starts-with? target-path (.-workspace-root manifest)))
-              (in-tmp (string-starts-with? target-path (.-temp-dir manifest)))
+        (let [(in-ws (or (= target-path (.-workspace-root manifest)) (string-starts-with? target-path (str (.-workspace-root manifest) "/"))))
+              (in-tmp (or (= target-path (.-temp-dir manifest)) (string-starts-with? target-path (str (.-temp-dir manifest) "/"))))
               (in-wt (is-in-worktrees? target-path (.-worktree-roots manifest)))
               (is-authorized (or in-ws (or in-tmp in-wt)))]
           (if (not is-authorized)

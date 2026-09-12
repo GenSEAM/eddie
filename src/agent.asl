@@ -147,7 +147,7 @@
                             :autonomy autonomy
                             :history (list-cons folding-log (.-history session)))
                  :action-taken (str "executed:" tool-name)
-                 :success true)))))))))
+                 :success (mt ffi-res ((ok _) true) ((err _) false)))))))))))
 
 (df run-bounded-session [(session AgentSession)] -> AgentSession
   :d "Advances session to terminal state if idle."

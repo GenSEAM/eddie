@@ -9,7 +9,7 @@
       resolve-anaphora-directive
       format-chat-ingress-asn
       render-chat-telemetry-asn]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfs ChatIngressEnvelope
   (:f session-id Str "Chat session identifier")

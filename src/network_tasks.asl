@@ -10,7 +10,7 @@
       make-network-task
       execute-network-task
       format-network-outcome-asn]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfe NetworkTaskKind
   (:c task-web-search [] "Real-time web search query")

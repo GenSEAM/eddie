@@ -21,7 +21,7 @@
       format-accessibility-payload
       execute-computer-action
       format-computer-receipt-asn]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfe TargetSubstrate
   (:c substrate-browser [] "Browser substrate via Chrome DevTools Protocol")

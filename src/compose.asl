@@ -12,7 +12,7 @@
       extract-pending-lookups
       resolve-lookup-question
       render-composition-context]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfe UnresolvedNeed
   (:c operator [] "Only human operator can answer; subject to ask limits")

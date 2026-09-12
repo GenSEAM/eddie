@@ -6,7 +6,7 @@
       record-prompt
       get-active-prompts
       render-prompt-pool-asn]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfs PromptEntry
   (:f text Str "Raw prompt text")

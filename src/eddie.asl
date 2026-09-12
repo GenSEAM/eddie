@@ -6,7 +6,7 @@
       gsa-run gsa-version gsa-banner
       eddie-run eddie-version eddie-banner
       addie-run addie-version addie-banner]
-  :i [(core/strings :a s) (policy :a pol) (agent :a ag) (feedback :a fb) (tui :a tui)])
+  :i [(asl-text/string :a s) (policy :a pol) (agent :a ag) (feedback :a fb) (tui :a tui)])
 
 (dfe TriageVerdict
   (:c instant [] "Layer 1: Instant execution (<0.04ms)")

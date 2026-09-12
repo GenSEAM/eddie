@@ -9,7 +9,7 @@
       tier-to-str
       resolve-processing-tier
       format-route-decision-asn]
-  :i [(core/strings :a s)])
+  :i [(asl-text/string :a s)])
 
 (dfe ProcessingTier
   (:c tier-0-ast [] "Sub-millisecond deterministic AST / regex in-memory")
