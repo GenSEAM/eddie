@@ -34,7 +34,7 @@
 
 (df make-vmm-state [(invariants-text Str) (max-tokens I64)] -> VmmState
   :d "Initializes the 4-slot Prompt VMM with Slot 1 (invariants) immutable and pinned."
-  (let [(toks-inv (/ (string-length invariants-text) 4))
+  (let [(toks-inv (div-i64 (string-length invariants-text) 4))
         (s1 (VmmSlot :slot-id (slot-invariants) :payload invariants-text :tokens toks-inv :is-pinned true))
         (s2 (VmmSlot :slot-id (slot-receipts) :payload "" :tokens 0 :is-pinned false))
         (s3 (VmmSlot :slot-id (slot-pinned) :payload "" :tokens 0 :is-pinned false))
@@ -50,7 +50,7 @@
         (s1 (get slots 0))
         (s2 (get slots 1))
         (s4 (get slots 3))
-        (toks (/ (string-length spec) 4))
+        (toks (div-i64 (string-length spec) 4))
         (s3-updated (VmmSlot :slot-id (slot-pinned) :payload spec :tokens toks :is-pinned false))
         (total-toks (+ (+ (.-tokens s1) (.-tokens s2)) (+ toks (.-tokens s4))))]
     (VmmState
@@ -68,7 +68,7 @@
         (s2-payload (if (= (string-length (.-payload s2)) 0)
                       receipt
                       (str (.-payload s2) "\n" receipt)))
-        (s2-toks (/ (string-length s2-payload) 4))
+        (s2-toks (div-i64 (string-length s2-payload) 4))
         (s2-updated (VmmSlot :slot-id (slot-receipts) :payload s2-payload :tokens s2-toks :is-pinned false))
         (s3-cleared (VmmSlot :slot-id (slot-pinned) :payload "" :tokens 0 :is-pinned false))
         (total-toks (+ (+ (.-tokens s1) s2-toks) (.-tokens s4)))]

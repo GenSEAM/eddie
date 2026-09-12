@@ -19,7 +19,7 @@
       make-default-hub-config
       make-ide-task
       format-claude-cli-dispatch
-      format-antigravity-mcp-payload
+      format-antigravity-cli-dispatch
       format-hub-envelope-asn
       make-execution-receipt
       is-receipt-falsified-and-green?
@@ -34,7 +34,7 @@
 
 (dfe IdeRuntime
   (:c ide-claude-code [] "Claude Code CLI headless runner")
-  (:c ide-antigravity [] "Google Antigravity IDE custom MCP sidecar")
+  (:c ide-antigravity [] "Google Antigravity IDE headless CLI runner")
   (:c ide-native-ad [] "Native AgentScript autonomous session")
   (:c ide-cursor-bridge [] "Cursor or Windsurf external tool bridge"))
 
@@ -136,9 +136,9 @@
   :d "Formats CLI command to run headless Claude Code inside isolated worktree"
   (str "cd " (.-worktree-path task) " && claude -p \"" (string-replace (.-prompt task) "\"" "") "\""))
 
-(df format-antigravity-mcp-payload [(task IdeTaskEnvelope)] -> Str
-  :d "Formats structured MCP request payload for Google Antigravity IDE sidecar"
-  (str "(:agy-mcp-request :task-id \"" (.-task-id task) "\" :workspace \"" (.-worktree-path task) "\" :intent \"" (.-intent-kind task) "\" :prompt \"" (string-replace (.-prompt task) "\"" "") "\")"))
+(df format-antigravity-cli-dispatch [(task IdeTaskEnvelope)] -> Str
+  :d "Formats CLI command to run Antigravity inside isolated worktree"
+  (str "cd " (.-worktree-path task) " && agy -p \"" (string-replace (.-prompt task) "\"" "") "\""))
 
 (df format-hub-envelope-asn [(task IdeTaskEnvelope)] -> Str
   :d "Formats canonical mesh dispatch packet for domain socket transport"

@@ -27,8 +27,8 @@
   :d "Constructs the standard system corridor enforcing zero-comment, zero-emoji, and gate preservation."
   (make-corridor
     id
-    (list "c-0001: zero comments in ASL"
-          "c-0002: zero emojis in ASN"
+    (list "C0001: zero comments in ASL"
+          "C0002: zero emojis in ASN"
           "gate-integrity: zero gate weakening"
           "pure-asl: zero foreign code in packages")
     (list "ast-refactoring: structural AST edits permitted"

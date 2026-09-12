@@ -6,7 +6,7 @@
       test-eddie-run-direct
       test-empty-goal-edge
       run-tests]
-  :i [(policy :a pol) (agent :a ag) (eddie :a ed)])
+  :i [(policy :a pol) (agent :a ag) (eddie :a eddie)])
 
 (df test-agent-autonomy-levels [] -> Bool
   (let [(m (pol/make-manifest "/workspace" (list) "/tmp" false))

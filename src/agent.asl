@@ -26,7 +26,8 @@
 (dfs StepResult
   (:f session AgentSession "Updated session record")
   (:f action-taken Str "Description of action or completion")
-  (:f success Bool "True if step completed without violation"))
+  (:f success Bool "True if step completed without violation")
+  (:f observation Str "Observation output from step"))
 
 (df make-agent-session [(goal Str) (manifest pol/PermissionManifest)] -> AgentSession
   :d "Initializes an AgentSession with standard 10-step ceiling and default L2:FullAuto."
@@ -58,7 +59,8 @@
        (StepResult
          :session session
          :action-taken "session already terminal"
-         :success true))
+         :success true
+         :observation (.-last-output (.-state session))))
       ((>= cur-step max-step)
        (let [(updated-st (AgentState
                            :phase "error"
@@ -74,7 +76,8 @@
                       :autonomy autonomy
                       :history (list-cons "step-budget-exceeded" (.-history session)))
            :action-taken "aborted: step budget ceiling"
-           :success false)))
+           :success false
+           :observation "Step budget exhausted (anti-OOM limit reached)")))
       ((= tool-name "finish")
        (let [(updated-st (AgentState
                            :phase "complete"
@@ -90,7 +93,8 @@
                       :autonomy autonomy
                       :history (list-cons (str "final-answer: " payload) (.-history session)))
            :action-taken "finish"
-           :success true)))
+           :success true
+           :observation payload)))
       (:else
        (let [(perm (pol/check-autonomy-permission tool-name target-path manifest autonomy))]
          (if (not (.-allowed perm))
@@ -109,7 +113,8 @@
                           :autonomy autonomy
                           :history (list-cons err-msg (.-history session)))
                :action-taken (str "denied: " (.-code perm))
-               :success false))
+               :success false
+               :observation err-msg))
            (if (not (.-silent perm))
              (let [(prompt-msg (str "Confirmation required: " (.-reason perm)))
                    (updated-st (AgentState
@@ -126,7 +131,8 @@
                             :autonomy autonomy
                             :history (list-cons prompt-msg (.-history session)))
                  :action-taken (str "prompt:" tool-name)
-                 :success true))
+                 :success true
+                 :observation prompt-msg))
              (let [(cap (if (or (= tool-name "read") (or (= tool-name "write") (= tool-name "patch"))) "fs" "exec"))
                    (act (if (= tool-name "read") "read" (if (= tool-name "write") "write" "exec")))
                    (ffi-res (ffi/host-call cap act target-path))
@@ -147,7 +153,8 @@
                             :autonomy autonomy
                             :history (list-cons folding-log (.-history session)))
                  :action-taken (str "executed:" tool-name)
-                 :success (mt ffi-res ((ok _) true) ((err _) false)))))))))))
+                 :success (mt ffi-res ((ok _) true) ((err _) false))
+                 :observation (.-last-output updated-st))))))))))
 
 (df run-bounded-session [(session AgentSession)] -> AgentSession
   :d "Advances session to terminal state if idle."

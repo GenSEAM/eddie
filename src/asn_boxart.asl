@@ -20,11 +20,11 @@
 (df format-box-badge [(state Str) (text Str)] -> Str
   :d "Formats a status badge prefix for a node box label."
   (let [(icon (cond
-                ((or (= state "done") (or (= state "passed") (= state "ok"))) "✓")
-                ((or (= state "running") (or (= state "active") (= state "in-progress"))) "▶")
-                ((or (= state "failed") (= state "error")) "✗")
-                ((or (= state "blocked") (= state "waiting")) "⏸")
-                (:else "•")))]
+                ((or (= state "done") (or (= state "passed") (= state "ok"))) "[OK]")
+                ((or (= state "running") (or (= state "active") (= state "in-progress"))) "[>]")
+                ((or (= state "failed") (= state "error")) "[FAIL]")
+                ((or (= state "blocked") (= state "waiting")) "[||]")
+                (:else "*")))]
     (str "[" icon "] " text)))
 
 (df render-tree-boxart [(root-title Str) (branches (List Str))] -> Str
@@ -35,7 +35,7 @@
       (let [(body (fold (fn [(acc Str) (idx I64)] -> Str
                           (let [(branch (option-or (list-get branches idx) ""))
                                 (is-last (= idx (- n 1)))
-                                (connector (if is-last "└── " "├── "))]
+                                (connector (if is-last "+-- " "|-- "))]
                             (str acc "\n" connector branch)))
                         root-title
                         (list-range 0 n)))]
@@ -44,10 +44,10 @@
 (df render-node-box [(node BoxNode)] -> Str
   :d "Renders a single node enclosed in a Unicode box."
   (let [(badge (format-box-badge (.-state node) (str (.-id node) " : " (.-title node))))
-        (pad-content (str "│ " badge " │"))
+        (pad-content (str "| " badge " |"))
         (inner-len (+ (string-length badge) 2))
-        (top-border (str "┌" (string-repeat "─" inner-len) "┐"))
-        (bot-border (str "└" (string-repeat "─" inner-len) "┘"))]
+        (top-border (str "+" (string-repeat "-" inner-len) "+"))
+        (bot-border (str "+" (string-repeat "-" inner-len) "+"))]
     (str top-border "\n" pad-content "\n" bot-border)))
 
 (df find-outgoing-edges [(edges (List BoxEdge)) (node-id Str)] -> (List BoxEdge)
@@ -79,7 +79,7 @@
                                   ((some l) (str " (" l ")"))))))
                     (connector (if (not is-last)
                                  (if has-edge
-                                   (str "\n       │" lbl-str "\n       ▼\n")
+                                   (str "\n       |" lbl-str "\n       [v]\n")
                                    "\n\n")
                                  ""))]
                 (if (string-empty? acc)
