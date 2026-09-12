@@ -28,7 +28,7 @@
 (df test-tui-folding-ablation [] -> Bool
   :d "Verifies that tool call folding reduces terminal output clutter from multi-line dump to 1 line."
   (let [(folding (tui/format-tool-call "patch" "src/app.asl:42" "applied (<50us)"))]
-    (assert (string-contains? folding "▶ [patch]") "folding contains marker")
+    (assert (string-contains? folding "[>] [patch]") "folding contains marker")
     (assert (not (string-contains? folding "\n")) "folding single line")
     true))
 

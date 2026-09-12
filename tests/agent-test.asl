@@ -29,7 +29,7 @@
         (s (ag/make-autonomy-session "read main" m (pol/level-auto)))
         (res (ag/step-agent s "read" "/workspace/src/main.asl" ""))
         (hist (.-history (.-session res)))]
-    (let [(has-folded (not (list-empty? (filter (fn [(x Str)] -> Bool (string-contains? x "▶ [read]")) hist))))]
+    (let [(has-folded (not (list-empty? (filter (fn [(x Str)] -> Bool (string-contains? x "[>] [read]")) hist))))]
       (do
         (assert has-folded "c-agent-edge-002: folding history present")
         (assert (not (list-empty? hist)) "c-agent-edge-002: history not empty")

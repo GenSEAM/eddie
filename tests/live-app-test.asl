@@ -35,9 +35,9 @@
         (folding2 (tui/format-tool-call "test" "tests/snake-test.asl" "passing (5/5 assertions)"))
         (summary (tui/format-session-summary h 3))]
     (assert (string-contains? (tui/format-tui-header h) "Addie TUI") "header contains Addie TUI")
-    (assert (string-contains? folding1 "▶ [read]") "folding contains read tool")
-    (assert (string-contains? folding2 "▶ [test]") "folding contains test tool")
-    (assert (string-contains? summary "✔ Session complete") "summary contains Session complete")
+    (assert (string-contains? folding1 "[>] [read]") "folding contains read tool")
+    (assert (string-contains? folding2 "[>] [test]") "folding contains test tool")
+    (assert (string-contains? summary "[OK] Session complete") "summary contains Session complete")
     true))
 
 (df run-tests [] -> Bool

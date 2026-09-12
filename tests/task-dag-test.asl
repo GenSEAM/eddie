@@ -68,7 +68,7 @@
         (art (dag/render-task-dag-boxart d))]
     (assert (string-contains? art "t1 : Root task") "c-dag-box-001: contains t1")
     (assert (string-contains? art "t2 : Child task") "c-dag-box-002: contains t2")
-    (assert (string-contains? art "▼") "c-dag-box-003: contains directed arrow")
+    (assert (string-contains? art "[v]") "c-dag-box-003: contains directed arrow")
     (assert (not (string-empty? art)) "c-dag-box-neg-001: art not empty")
     true))
 
